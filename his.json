@@ -1,0 +1,92 @@
+[
+ {
+  "territorio": "vila-mariana",
+  "nome": "Exalt Ibirapuera",
+  "agente": "Incorporadora (EZ. / Islandia Incorporadora Ltda.)",
+  "unidades": null,
+  "endereco": "Rua Borges Lagoa, 232, Vila Clementino",
+  "situacao": "Empreendimento com unidades HIS, segundo o documento da incorporadora (espelho por tipologia). Quantidade a levantar no GeoSampa.",
+  "fonte": "EZTEC, documento “Entenda o HIS/HMP”",
+  "url": "https://www.eztec.com.br/wp-content/uploads/2025/11/EZTEC_EXALT-IBIRAPUERA.pdf"
+ },
+ {
+  "territorio": "ipiranga-sacoma",
+  "nome": "Sabesp II (Sacomã I), Heliópolis",
+  "agente": "SEHAB, COHAB-SP e Governo do Estado; urbanização de favelas",
+  "unidades": 1200,
+  "endereco": null,
+  "situacao": "Cinco condomínios. Concluído com a entrega das últimas 120 unidades (Residencial Girassol) em set/2026.",
+  "fonte": "Prefeitura de SP (SEHAB), set/2026",
+  "url": "https://prefeitura.sp.gov.br/web/habitacao/w/prefeitura-e-governo-do-estado-concluem-projeto-sabesp-ii-com-entrega-das-%C3%BAltimas-120-moradias-de-um-total-de-1.200-unidades"
+ },
+ {
+  "territorio": "ipiranga-sacoma",
+  "nome": "Sabesp I (Heliópolis 1)",
+  "agente": "SEHAB; PAC Heliópolis",
+  "unidades": 538,
+  "endereco": null,
+  "situacao": "Conjunto de 538 unidades; em 2025 parte ainda estava em obras, com entrega prevista para o 1º trimestre de 2026.",
+  "fonte": "Subprefeitura Ipiranga, 2025",
+  "url": "https://prefeitura.sp.gov.br/web/ipiranga/w/prefeitura-de-s%C3%A3o-paulo-entrega-moradias-no-heli%C3%B3polis"
+ },
+ {
+  "territorio": "ipiranga-sacoma",
+  "nome": "Residencial Comandante Taylor",
+  "agente": "SEHAB",
+  "unidades": 421,
+  "endereco": null,
+  "situacao": "Provisão concluída, segundo informação de 2012.",
+  "fonte": "Câmara Municipal de SP, justificativa de projeto, 2012",
+  "url": "https://www.saopaulo.sp.leg.br/iah/fulltext/justificativa/JPL0468-2012.pdf"
+ },
+ {
+  "territorio": "guaianases",
+  "nome": "Residencial Bauru (A e B)",
+  "agente": "Pode Entrar Empresas (Prefeitura e iniciativa privada)",
+  "unidades": 440,
+  "endereco": "Rua Francisco Sotomaior, 398",
+  "situacao": "Entregue em 31/03/2026, junto com o Residencial Lajeado (968 unidades no total).",
+  "fonte": "Prefeitura de SP, mar/2026; endereço em nota reproduzida pelo ABC do ABC",
+  "url": "https://prefeitura.sp.gov.br/w/prefeitura-entrega-quase-mil-moradias-de-uma-%C3%BAnica-vez-na-zona-leste"
+ },
+ {
+  "territorio": "guaianases",
+  "nome": "Residencial Lajeado (A e B)",
+  "agente": "Pode Entrar Empresas (Prefeitura e iniciativa privada)",
+  "unidades": 528,
+  "endereco": "Rua Jerônimo Pedroso, 330",
+  "situacao": "Entregue em 31/03/2026. Confirmar em qual distrito fica o endereço.",
+  "fonte": "Prefeitura de SP, mar/2026; endereço em nota reproduzida pelo ABC do ABC",
+  "url": "https://prefeitura.sp.gov.br/w/prefeitura-entrega-quase-mil-moradias-de-uma-%C3%BAnica-vez-na-zona-leste"
+ },
+ {
+  "territorio": "guaianases",
+  "nome": "Conjunto Santa Rita (Lajeado L)",
+  "agente": "Governo do Estado de SP",
+  "unidades": 300,
+  "endereco": "Jardim Lourdes, Guaianases",
+  "situacao": "Entregue; data a confirmar na fonte.",
+  "fonte": "Subprefeitura Itaim Paulista",
+  "url": "https://prefeitura.sp.gov.br/web/itaim_paulista/w/300-apartamentos-zona-leste"
+ },
+ {
+  "territorio": "cidade-tiradentes",
+  "nome": "Conjuntos habitacionais da COHAB-SP (13 conjuntos)",
+  "agente": "COHAB-SP",
+  "unidades": 40180,
+  "endereco": null,
+  "situacao": "Construídos entre 1975 e 1997. Entre os conjuntos citados em entregas de escrituras: Barro Branco, Castro Alves, Santa Etelvina, Inácio Monteiro, Prestes Maia, Jardim São Paulo, Campanha Gaúcha, Jardim dos Ipês, Sítio Casa Blanca e Sítio Conceição.",
+  "fonte": "Subprefeitura Cidade Tiradentes (relatório de gestão 2019) e Prefeitura de SP",
+  "url": "https://www.prefeitura.sp.gov.br/cidade/secretarias/subprefeituras/upload/cidade_tiradentes/arquivos/RELATORIO_JANEIRO_2019_Cidade_Tiradentes_2019_2.pdf"
+ },
+ {
+  "territorio": "cidade-tiradentes",
+  "nome": "Residencial Nossa Senhora de Guadalupe",
+  "agente": "Programa Pode Entrar – Entidades",
+  "unidades": 84,
+  "endereco": null,
+  "situacao": "Entregue; data a confirmar na fonte.",
+  "fonte": "Prefeitura Presente em Cidade Tiradentes",
+  "url": "https://prefeitura.sp.gov.br/w/prefeitura-presente-mais-de-r-600-milh%C3%B5es-em-investimentos-transformam-cidade-tiradentes"
+ }
+]

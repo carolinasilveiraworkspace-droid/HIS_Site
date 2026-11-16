@@ -1,0 +1,69 @@
+{
+ "type": "FeatureCollection",
+ "features": [
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -46.637,
+     -23.589
+    ]
+   },
+   "properties": {
+    "territorio": "Vila Mariana",
+    "empreendimentos": 1,
+    "unidades_documentadas": "não informado",
+    "posicao": "representativa do território, não é a localização dos empreendimentos"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -46.607,
+     -23.6
+    ]
+   },
+   "properties": {
+    "territorio": "Ipiranga/Sacomã",
+    "empreendimentos": 3,
+    "unidades_documentadas": 2159,
+    "posicao": "representativa do território, não é a localização dos empreendimentos"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -46.413,
+     -23.543
+    ]
+   },
+   "properties": {
+    "territorio": "Guaianases",
+    "empreendimentos": 3,
+    "unidades_documentadas": 1268,
+    "posicao": "representativa do território, não é a localização dos empreendimentos"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -46.4,
+     -23.583
+    ]
+   },
+   "properties": {
+    "territorio": "Cidade Tiradentes",
+    "empreendimentos": 2,
+    "unidades_documentadas": 40264,
+    "posicao": "representativa do território, não é a localização dos empreendimentos"
+   }
+  }
+ ]
+}
