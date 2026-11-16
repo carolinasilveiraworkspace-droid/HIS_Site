@@ -22,6 +22,9 @@ Cada camada é um GeoJSON (WGS84, EPSG:4326). Se o arquivo não existe, a camada
 - `perimetros.geojson`: pontos dos perímetros com ficha (propriedades: id, nome, territorio, aprox, protecao). A posição da Chácara das Jaboticabeiras é **aproximada**; troque pela posição oficial. Esta versão só aceita Point.
 - `juridico.json`: registros curados, ligados ao perímetro por `perimetro` (campos: data, instancia, registro, parte, status, fonte). Os dois registros de exemplo precisam ser conferidos nos atos oficiais.
 
+## Guia do Morador
+A aba "Guia do morador" mostra o PDF em `guia/Guia_do_Morador_Vila_Mariana.pdf` (visualizador embutido, botão de baixar, abrir em nova aba e sumário por página). Para atualizar, troque o PDF mantendo o nome do arquivo.
+
 ## Dados de demonstração (his_mock.geojson)
 - 14 polígonos **inventados** nos 5 territórios. Nada ali é empreendimento real.
 - Campos: id, nome, territorio, tipo (ZEIS 1/2/3, Empreendimento HIS 1/2, etc.), fase (proposta, em aprovação, em obras, entregue), unidades, agente, nota, demo.

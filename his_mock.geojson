@@ -1,0 +1,300 @@
+{
+ "type": "FeatureCollection",
+ "name": "his_mock",
+ "features": [
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -46.635204,
+     -23.588402
+    ]
+   },
+   "properties": {
+    "id": "demo-01",
+    "nome": "HIS fictícia 01",
+    "territorio": "Vila Mariana",
+    "tipo": "Empreendimento HIS 2",
+    "fase": "em aprovação",
+    "unidades": 96,
+    "agente": "Incorporadora (fictícia)",
+    "nota": "Perto da Chácara: entra na contagem de 500 m da ficha.",
+    "demo": true
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -46.640007,
+     -23.59178
+    ]
+   },
+   "properties": {
+    "id": "demo-02",
+    "nome": "HIS fictícia 02",
+    "territorio": "Vila Mariana",
+    "tipo": "ZEIS 3 (lote ocioso)",
+    "fase": "proposta",
+    "unidades": 0,
+    "agente": "Poder público (fictício)",
+    "nota": "Terreno que poderia receber HIS; sem projeto.",
+    "demo": true
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -46.628176,
+     -23.58683
+    ]
+   },
+   "properties": {
+    "id": "demo-03",
+    "nome": "HIS fictícia 03",
+    "territorio": "Vila Mariana",
+    "tipo": "Empreendimento HIS 1",
+    "fase": "em obras",
+    "unidades": 140,
+    "agente": "Incorporadora (fictícia)",
+    "nota": "Fora do raio de 500 m: não entra na contagem da ficha.",
+    "demo": true
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -46.612878,
+     -23.59735
+    ]
+   },
+   "properties": {
+    "id": "demo-04",
+    "nome": "HIS fictícia 04",
+    "territorio": "Ipiranga/Sacomã",
+    "tipo": "Urbanização de favela",
+    "fase": "entregue",
+    "unidades": 320,
+    "agente": "Poder público (fictício)",
+    "nota": "Exemplo de conjunto já entregue.",
+    "demo": true
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -46.600058,
+     -23.603645
+    ]
+   },
+   "properties": {
+    "id": "demo-05",
+    "nome": "HIS fictícia 05",
+    "territorio": "Ipiranga/Sacomã",
+    "tipo": "Empreendimento HIS 1",
+    "fase": "em obras",
+    "unidades": 210,
+    "agente": "Governo estadual (fictício)",
+    "nota": "Exemplo de obra em andamento.",
+    "demo": true
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -46.604981,
+     -23.59462
+    ]
+   },
+   "properties": {
+    "id": "demo-06",
+    "nome": "HIS fictícia 06",
+    "territorio": "Ipiranga/Sacomã",
+    "tipo": "ZEIS 1 (favela)",
+    "fase": "proposta",
+    "unidades": 0,
+    "agente": "Poder público (fictício)",
+    "nota": "Área demarcada como ZEIS, sem provisão ainda.",
+    "demo": true
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -46.416834,
+     -23.542082
+    ]
+   },
+   "properties": {
+    "id": "demo-07",
+    "nome": "HIS fictícia 07",
+    "territorio": "Guaianases",
+    "tipo": "Empreendimento HIS 1",
+    "fase": "entregue",
+    "unidades": 440,
+    "agente": "Poder público (fictício)",
+    "nota": "Exemplo de conjunto entregue.",
+    "demo": true
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -46.408146,
+     -23.545654
+    ]
+   },
+   "properties": {
+    "id": "demo-08",
+    "nome": "HIS fictícia 08",
+    "territorio": "Guaianases",
+    "tipo": "Empreendimento HIS 1",
+    "fase": "entregue",
+    "unidades": 528,
+    "agente": "Poder público (fictício)",
+    "nota": "Exemplo de conjunto entregue.",
+    "demo": true
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -46.411954,
+     -23.536694
+    ]
+   },
+   "properties": {
+    "id": "demo-09",
+    "nome": "HIS fictícia 09",
+    "territorio": "Guaianases",
+    "tipo": "ZEIS 2 (vazio)",
+    "fase": "em aprovação",
+    "unidades": 180,
+    "agente": "Entidade / movimento de moradia (fictício)",
+    "nota": "Projeto de entidade em análise.",
+    "demo": true
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -46.398948,
+     -23.557285
+    ]
+   },
+   "properties": {
+    "id": "demo-10",
+    "nome": "HIS fictícia 10",
+    "territorio": "Lajeado",
+    "tipo": "ZEIS 2 (vazio)",
+    "fase": "proposta",
+    "unidades": 0,
+    "agente": "Poder público (fictício)",
+    "nota": "Terreno demarcado, sem projeto.",
+    "demo": true
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -46.392632,
+     -23.554235
+    ]
+   },
+   "properties": {
+    "id": "demo-11",
+    "nome": "HIS fictícia 11",
+    "territorio": "Lajeado",
+    "tipo": "Empreendimento HIS 2",
+    "fase": "em obras",
+    "unidades": 160,
+    "agente": "Incorporadora (fictícia)",
+    "nota": "Exemplo de obra em andamento.",
+    "demo": true
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -46.404915,
+     -23.581366
+    ]
+   },
+   "properties": {
+    "id": "demo-12",
+    "nome": "HIS fictícia 12",
+    "territorio": "Cidade Tiradentes",
+    "tipo": "Conjunto COHAB (antigo)",
+    "fase": "entregue",
+    "unidades": 1800,
+    "agente": "Poder público (fictício)",
+    "nota": "Exemplo de conjunto antigo (o real tem milhares de unidades).",
+    "demo": true
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -46.394126,
+     -23.585667
+    ]
+   },
+   "properties": {
+    "id": "demo-13",
+    "nome": "HIS fictícia 13",
+    "territorio": "Cidade Tiradentes",
+    "tipo": "Empreendimento HIS 1",
+    "fase": "em aprovação",
+    "unidades": 250,
+    "agente": "Entidade / movimento de moradia (fictício)",
+    "nota": "Projeto em análise.",
+    "demo": true
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -46.399533,
+     -23.589345
+    ]
+   },
+   "properties": {
+    "id": "demo-14",
+    "nome": "HIS fictícia 14",
+    "territorio": "Cidade Tiradentes",
+    "tipo": "ZEIS 1 (favela)",
+    "fase": "proposta",
+    "unidades": 0,
+    "agente": "Poder público (fictício)",
+    "nota": "Área demarcada, sem provisão.",
+    "demo": true
+   }
+  }
+ ]
+}
