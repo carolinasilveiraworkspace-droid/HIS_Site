@@ -1,0 +1,17 @@
+Pasta das camadas do mapa (MapLibre)
+
+Coloque aqui os arquivos GeoJSON, em WGS84 (EPSG:4326), com exatamente estes nomes:
+
+- distritos.geojson ...... Distritos (GeoSampa / Prefeitura)
+- his.geojson ............ HIS e ZEIS (GeoSampa, SEHAB, CDHU)
+- risco.geojson .......... Risco geológico e inundação (GeoSampa, IPT)
+- contaminadas.geojson ... Áreas contaminadas (CETESB)
+- app.geojson ............ APP e cursos d'água (GeoSampa)
+- vegetacao.geojson ...... Cobertura vegetal (MapBiomas, PMMA)
+- protecoes.geojson ...... Proteções (CONPRESP, CONDEPHAAT, IPHAN, GeoSampa)
+
+Ao abrir, o site procura cada arquivo. O que existir aparece no mapa (com botão de ligar e desligar
+nos filtros) e muda para "carregada (N)" na aba Cobertura de dados. O que faltar fica "sem arquivo".
+
+Aceita FeatureCollection ou Feature, com pontos, linhas, polígonos e as versões Multi.
+Shapefile? Converta com: ogr2ogr -f GeoJSON -t_srs EPSG:4326 his.geojson his.shp

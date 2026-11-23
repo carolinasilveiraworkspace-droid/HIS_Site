@@ -1,0 +1,1193 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="HIS.SP: mapa, guia e assistente para moradores acompanharem a Habitação de Interesse Social em São Paulo e denunciarem usos irregulares no 156.">
+<meta name="theme-color" content="#231C18">
+<meta property="og:title" content="HIS.SP · Território e participação popular">
+<meta property="og:description" content="Moradia popular é para quem precisa. Veja as regras da HIS, reconheça sinais de uso irregular e monte o texto da sua denúncia.">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="pt_BR">
+
+<title>HIS.SP · moradia popular é para quem precisa</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="stylesheet" href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,500..800&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#E9EAE4; --surface:#FFFFFF; --ink:#231C18; --muted:#5A524C; --line:#CFCDC4; --line-soft:#E0DFD8;
+  --brick:#A4472A; --brick-dark:#7E3420; --brick-soft:#F4DED4;
+  --clay:#E2A07E; --clay-soft:#F8E8DE;
+  --green:#2F5D50; --green-soft:#DCE8E1;
+  --header-muted:#BDB3A8;
+  --ph-proposta:#E2A07E; --ph-aprov:#C2652F; --ph-obras:#7E3420; --ph-entregue:#2F5D50;
+  --r-sm:6px; --r-md:10px; --r-lg:18px; --r-pill:999px;
+  --s1:4px; --s2:8px; --s3:12px; --s4:16px; --s5:24px; --s6:32px; --s7:48px; --s8:72px;
+  --display:"Archivo","Arial Narrow",system-ui,sans-serif;
+  --body:"Atkinson Hyperlegible",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --shadow:0 1px 0 rgba(35,28,24,.08),0 8px 24px -12px rgba(35,28,24,.35);
+}
+*{box-sizing:border-box}
+html{font-size:100%;-webkit-text-size-adjust:100%}
+html[data-size="1"]{font-size:112.5%} html[data-size="2"]{font-size:125%}
+body{margin:0;background:var(--paper);color:var(--ink);font:400 1rem/1.6 var(--body)}
+h1,h2,h3,h4{font-family:var(--display);font-stretch:85%;line-height:1.08;margin:0;letter-spacing:-.01em}
+p{margin:0 0 var(--s3)}
+a{color:var(--brick-dark)}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--ink);outline-offset:2px;border-radius:4px}
+.top :focus-visible{outline-color:var(--clay)}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.skip{position:absolute;left:-999px;top:8px;background:var(--clay);color:var(--ink);padding:8px 14px;border-radius:var(--r-sm);z-index:100;font-weight:700}
+.skip:focus{left:8px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+
+/* ---------- header ---------- */
+.top{position:sticky;top:0;z-index:50;background:var(--ink);color:#fff}
+.top-in{display:flex;align-items:center;gap:var(--s4);max-width:1440px;margin:0 auto;padding:0 var(--s5);min-height:64px}
+.brand{display:flex;align-items:center;gap:8px;color:#fff;text-decoration:none;flex:none}
+.brand b{font:800 1.375rem/1 var(--display);font-stretch:75%;letter-spacing:.01em}
+.brand small{display:block;font-size:.75rem;color:var(--header-muted);line-height:1.2;white-space:nowrap}
+.nav{display:flex;align-items:stretch;gap:2px;margin-left:auto}
+.nav a{white-space:nowrap;display:flex;align-items:center;padding:0 12px;min-height:64px;color:var(--header-muted);text-decoration:none;font-weight:700;font-size:.9375rem;border-bottom:3px solid transparent}
+.nav a:hover{color:#fff}
+.nav a[aria-current="page"]{color:#fff;border-bottom-color:var(--clay)}
+.tools{display:flex;align-items:center;gap:var(--s2)}
+.size{display:flex;border:1px solid #5a4d45;border-radius:var(--r-pill);overflow:hidden}
+.size button{background:none;border:0;color:#fff;min-width:40px;min-height:40px;cursor:pointer;font-weight:700}
+.size button[aria-pressed="true"]{background:#4a3e37}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:0 20px;border-radius:var(--r-pill);border:2px solid transparent;font-weight:700;font-size:.9375rem;text-decoration:none;cursor:pointer;line-height:1.1;text-align:center}
+.btn-primary{background:var(--brick);color:#fff}
+.btn-primary:hover{background:var(--brick-dark)}
+.btn-ghost{background:transparent;border-color:currentColor;color:var(--ink)}
+.btn-ghost:hover{background:rgba(35,28,24,.06)}
+.btn-dark{background:var(--ink);color:#fff}
+.btn-dark:hover{background:#000}
+.btn-sm{min-height:36px;padding:0 14px;font-size:.875rem}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+.top .btn-primary{flex:none;background:var(--clay-soft);color:var(--ink);min-height:46px;padding:0 22px 0 18px;font-size:1rem;box-shadow:0 0 0 0 rgba(226,160,126,.0)}
+.top .btn-primary:hover{background:#fff;color:var(--ink)}
+.top .btn-primary svg{flex:none}
+.menu-btn{display:none;background:none;border:1px solid #5a4d45;color:#fff;border-radius:var(--r-md);min-height:44px;padding:0 14px;font-weight:700;cursor:pointer}
+@media (max-width:1360px){
+  .brand small{display:none}
+  .menu-btn{display:inline-flex;align-items:center;margin-left:auto}
+  .nav{display:none;position:absolute;left:0;right:0;top:64px;background:var(--ink);flex-direction:column;padding:var(--s2) var(--s4) var(--s4);border-top:1px solid #3d332d}
+  .nav.open{display:flex}
+  .nav a{min-height:52px;border-bottom:0;border-left:3px solid transparent;padding-left:14px}
+  .nav a[aria-current="page"]{border-left-color:var(--clay)}
+  .top .btn-primary{padding:0 14px}
+}
+@media (max-width:560px){.size{display:none}.top-in{padding:0 var(--s3);gap:var(--s2)}}
+
+/* ---------- page shell ---------- */
+main{display:block}
+.wrap{max-width:1180px;margin:0 auto;padding:var(--s7) var(--s5) var(--s8)}
+@media (max-width:700px){.wrap{padding:var(--s5) var(--s4) var(--s7)}}
+.page-head{max-width:46rem;margin-bottom:var(--s6)}
+.page-head h1{font-size:clamp(2rem,4.2vw,3.25rem);font-weight:800}
+.page-head p{font-size:1.125rem;color:var(--muted);margin-top:var(--s3)}
+.kicker{display:inline-block;font-weight:700;color:var(--brick-dark);margin-bottom:var(--s2);font-size:.9375rem}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);padding:var(--s5)}
+.note{display:flex;gap:var(--s3);align-items:flex-start;background:var(--surface);border:1px solid var(--line);border-radius:var(--r-md);padding:var(--s3) var(--s4);font-size:.9375rem}
+.note svg{flex:none;margin-top:3px}
+.note.green{background:var(--green-soft);border-color:transparent}
+.note.brick{background:var(--brick-soft);border-color:transparent}
+.tag{display:inline-flex;align-items:center;gap:6px;border-radius:var(--r-pill);padding:2px 10px;font-size:.8125rem;font-weight:700;background:var(--line-soft);color:var(--ink);white-space:nowrap}
+.tag.demo{background:var(--clay-soft);color:var(--brick-dark)}
+.tag.ok{background:var(--green-soft);color:var(--green)}
+.tag.warn{background:var(--brick-soft);color:var(--brick-dark)}
+.dot{width:10px;height:10px;border-radius:50%;display:inline-block;flex:none}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--s4)}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--s4)}
+@media (max-width:860px){.grid2,.grid3{grid-template-columns:1fr}}
+.field{display:flex;flex-direction:column;gap:6px;margin-bottom:var(--s4)}
+.field label,.field .lbl{font-weight:700;font-size:.9375rem}
+.field .hint{font-size:.875rem;color:var(--muted)}
+.field label.choice{font-weight:400}
+.input,select.input,textarea.input{width:100%;min-height:48px;padding:10px 14px;border:1.5px solid var(--line);border-radius:var(--r-md);background:#fff}
+textarea.input{min-height:96px;resize:vertical;line-height:1.5}
+.input:focus{border-color:var(--ink);outline:none;box-shadow:0 0 0 3px var(--brick-soft)}
+.seg{display:inline-flex;flex-wrap:wrap;gap:6px}
+.chip{display:inline-flex;align-items:center;gap:8px;min-height:40px;padding:0 14px;border-radius:var(--r-pill);border:1.5px solid var(--line);background:#fff;font-weight:700;font-size:.875rem;cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:#fff}
+.chip.off{background:transparent;color:var(--muted)}
+.chip.off .dot{opacity:.35}
+table{border-collapse:collapse;width:100%}
+th{text-align:left;font-size:.8125rem;color:var(--muted);font-weight:700;padding:10px 14px;border-bottom:1.5px solid var(--line)}
+td{padding:12px 14px;border-bottom:1px solid var(--line-soft);vertical-align:top}
+code{font-size:.875em;background:var(--line-soft);padding:1px 6px;border-radius:4px}
+
+/* ---------- MAPA ---------- */
+.map-page{display:grid;grid-template-columns:300px minmax(0,1fr);height:calc(100vh - 64px);min-height:620px}
+.filters{padding:var(--s5)}
+.filters h2{font-size:1.125rem;font-weight:700;margin:var(--s5) 0 var(--s2)}
+.filters h2:first-child{margin-top:0}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:var(--s4)}
+.stats div{background:var(--paper);border-radius:var(--r-md);padding:10px;font-size:.8125rem;color:var(--muted);line-height:1.25}
+.stats b{display:block;font:800 1.75rem/1 var(--display);color:var(--ink);font-stretch:80%}
+.how{font-size:.9375rem;color:var(--muted);padding-left:1.2em;margin:0}
+.how li{margin:4px 0}
+.toggle{display:flex;gap:12px;align-items:flex-start;padding:6px 0;cursor:pointer}
+.toggle input{width:20px;height:20px;margin-top:3px;accent-color:var(--brick)}
+.toggle small{display:block;color:var(--muted);font-size:.8125rem}
+.filters-col{min-height:0;overflow:auto;background:var(--surface);border-right:1px solid var(--line)}
+.map-col{display:flex;flex-direction:column;min-height:0}
+.map-area{position:relative;overflow:hidden;background:#DCDDD5;flex:1;min-height:0}
+.chip.ph[aria-pressed="true"]{background:#fff;color:var(--ink);border-color:var(--ink)}
+.map-svg{position:absolute;inset:0;width:100%;height:100%}
+.map-bar{position:absolute;top:var(--s3);left:var(--s3);right:var(--s3);display:flex;flex-wrap:wrap;gap:var(--s2);align-items:center;pointer-events:none}
+.map-bar>*{pointer-events:auto}
+.terrs{display:flex;gap:6px;overflow-x:auto;max-width:100%;padding-bottom:2px;scrollbar-width:none}
+@media (min-width:901px){.terrs{flex-wrap:wrap;overflow:visible}}
+.terrs .chip{flex:none;box-shadow:var(--shadow)}
+.search{display:flex;align-items:center;gap:8px;background:#fff;border-radius:var(--r-pill);padding:0 6px 0 14px;box-shadow:var(--shadow);border:1px solid var(--line)}
+.search input{border:0;background:none;min-height:44px;width:min(260px,52vw);outline:none}
+.search span{font-size:.8125rem;color:var(--muted);font-weight:700;padding-right:8px;white-space:nowrap}
+.pin{position:absolute;transform:translate(-50%,-100%);background:none;border:0;padding:0;cursor:pointer;width:44px;height:52px;display:flex;align-items:flex-end;justify-content:center;filter:drop-shadow(0 3px 3px rgba(35,28,24,.4));transition:transform .15s}
+.pin[aria-pressed="true"]{transform:translate(-50%,-100%) scale(1.25);z-index:3}
+.pin text{font:800 11px var(--display);fill:#fff}
+.perim{white-space:nowrap;position:absolute;transform:translate(-50%,-50%);display:flex;align-items:center;gap:8px;min-height:44px;padding:0 16px;border-radius:var(--r-pill);background:var(--ink);color:#fff;border:3px solid #fff;font-weight:700;font-size:.875rem;cursor:pointer;box-shadow:var(--shadow);z-index:2}
+.perim[aria-pressed="true"]{border-color:var(--clay)}
+.ring{position:absolute;transform:translate(-50%,-50%);border:2.5px dashed var(--ink);border-radius:50%;pointer-events:none;background:rgba(164,71,42,.07)}
+.ring span{position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;font-size:.75rem;font-weight:700;padding:1px 8px;border-radius:var(--r-pill)}
+.legend{position:absolute;left:var(--s3);bottom:var(--s3);background:#fff;border-radius:var(--r-md);padding:10px 14px;box-shadow:var(--shadow);font-size:.8125rem;max-width:calc(100% - 2*var(--s3))}
+.legend ul{list-style:none;margin:6px 0 0;padding:0;display:flex;flex-wrap:wrap;gap:6px 14px}
+.legend li{display:flex;align-items:center;gap:6px}
+.ficha{position:absolute;top:var(--s3);right:var(--s3);bottom:var(--s3);width:360px;background:#fff;border-radius:var(--r-lg);box-shadow:0 20px 50px -20px rgba(35,28,24,.55);display:flex;flex-direction:column;overflow:hidden;z-index:5}
+.ficha-head{padding:var(--s4) var(--s5) 0;position:relative}
+.ficha-head h2{font-size:1.625rem;font-weight:800;padding-right:40px}
+.ficha-head .close{position:absolute;right:10px;top:10px}
+.ficha-body{padding:var(--s3) var(--s5) var(--s5);overflow:auto;flex:1}
+.icon-btn{width:44px;height:44px;display:inline-flex;align-items:center;justify-content:center;border-radius:50%;border:0;background:var(--paper);cursor:pointer}
+.tabs{display:flex;gap:2px;border-bottom:1.5px solid var(--line);margin:var(--s3) 0 0}
+.tabs button{background:none;border:0;border-bottom:3px solid transparent;margin-bottom:-1.5px;min-height:44px;padding:0 12px;font-weight:700;color:var(--muted);cursor:pointer}
+.tabs button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--brick)}
+.near{list-style:none;padding:0;margin:var(--s2) 0 var(--s4)}
+.near button{display:flex;gap:10px;width:100%;text-align:left;padding:10px 0;background:none;border:0;border-bottom:1px solid var(--line-soft);cursor:pointer;min-height:44px}
+.near button:hover b{text-decoration:underline}
+.near small{display:block;color:var(--muted);font-size:.8125rem}
+.kv{display:grid;grid-template-columns:7.5rem 1fr;gap:6px 10px;margin:var(--s3) 0;font-size:.9375rem}
+.kv dt{color:var(--muted)} .kv dd{margin:0;font-weight:700}
+.timeline-mini p{font-size:.9375rem;margin:0 0 var(--s3)}
+.demo-flag{position:absolute;right:var(--s3);bottom:var(--s3);background:var(--clay);color:var(--ink);font-size:.8125rem;font-weight:700;border-radius:var(--r-pill);padding:4px 12px;z-index:4}
+.ficha + .demo-flag{right:calc(360px + 2*var(--s3))}
+@media (min-width:901px){.has-ficha .map-bar{right:calc(360px + 3*var(--s3))}}
+.filters-toggle{display:none}
+@media (max-width:900px){
+  .map-page{grid-template-columns:1fr;height:auto;min-height:0}
+  .filters-col{border-right:0}
+  .filters{display:none;border-bottom:1px solid var(--line)}
+  .filters.open{display:block}
+  .filters-toggle{display:flex;justify-content:space-between;align-items:center;width:100%;background:var(--surface);border:0;border-bottom:1px solid var(--line);padding:var(--s3) var(--s4);font-weight:700;min-height:52px;cursor:pointer}
+  .map-area{height:62vh;min-height:440px;flex:none}
+  .ficha{position:relative;inset:auto;width:auto;margin:var(--s3);border-radius:var(--r-lg)}
+  .ficha + .demo-flag{right:var(--s3)}
+  .legend{font-size:.75rem;padding:8px 10px}
+  .demo-flag{display:none}
+  .perim{font-size:.8125rem;padding:0 12px}
+}
+
+/* ---------- DENUNCIAR ---------- */
+.steps{display:flex;gap:6px;list-style:none;padding:0;margin:0 0 var(--s6);counter-reset:s}
+.steps li{flex:1}
+.steps button{width:100%;display:flex;flex-direction:column;align-items:flex-start;gap:6px;background:none;border:0;padding:0;text-align:left;cursor:pointer;color:var(--muted);font-weight:700;font-size:.875rem}
+.steps button::before{content:"";display:block;width:100%;height:6px;border-radius:3px;background:var(--line)}
+.steps .done button{color:var(--ink)} .steps .done button::before{background:var(--green)}
+.steps .cur button{color:var(--ink)} .steps .cur button::before{background:var(--brick)}
+.steps button[disabled]{cursor:default}
+.steps .n{font-family:var(--display);font-size:.8125rem;color:var(--muted)}
+@media (max-width:700px){.steps .t{display:none}.steps .cur .t{display:inline}}
+.report{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:var(--s6);align-items:start}
+@media (max-width:960px){.report{grid-template-columns:1fr}}
+.step-title{font-size:clamp(1.75rem,3.4vw,2.5rem);font-weight:800;margin-bottom:var(--s2)}
+.step-lead{color:var(--muted);font-size:1.0625rem;margin-bottom:var(--s5)}
+.choices{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--s3)}
+@media (max-width:600px){.choices{grid-template-columns:1fr}}
+.choice{position:relative;display:flex;gap:var(--s3);align-items:flex-start;padding:var(--s4);background:#fff;border:2px solid var(--line);border-radius:var(--r-lg);cursor:pointer;min-height:44px}
+.choice:hover{border-color:var(--muted)}
+.choice input{position:absolute;opacity:0;pointer-events:none}
+.choice .box{flex:none;width:22px;height:22px;border:2px solid var(--muted);border-radius:6px;margin-top:2px;display:flex;align-items:center;justify-content:center;background:#fff}
+.choice.radio .box{border-radius:50%}
+.choice b{display:block;font-size:1rem}
+.choice small{display:block;color:var(--muted);font-size:.875rem;margin-top:2px}
+.choice:has(input:checked){border-color:var(--brick);background:var(--brick-soft)}
+.choice:has(input:checked) .box{background:var(--brick);border-color:var(--brick)}
+.choice:has(input:checked) .box::after{content:"";width:6px;height:11px;border:solid #fff;border-width:0 2.5px 2.5px 0;transform:rotate(45deg) translate(-1px,-1px)}
+.choice.radio:has(input:checked) .box::after{width:8px;height:8px;border:0;background:#fff;border-radius:50%;transform:none}
+.choice:has(input:focus-visible){outline:3px solid var(--ink);outline-offset:2px}
+.nav-row{display:flex;gap:var(--s3);justify-content:space-between;align-items:center;margin-top:var(--s6);padding-top:var(--s4);border-top:1px solid var(--line)}
+.diary{list-style:none;margin:0 0 var(--s3);padding:0}
+.diary li{display:flex;gap:var(--s3);align-items:flex-start;background:#fff;border:1px solid var(--line);border-radius:var(--r-md);padding:10px 12px;margin-bottom:6px}
+.diary time{font-weight:700;white-space:nowrap;font-size:.875rem}
+.diary span{flex:1;font-size:.9375rem}
+.diary button{background:none;border:0;color:var(--brick-dark);font-weight:700;cursor:pointer;min-height:32px}
+.diary-add{display:grid;grid-template-columns:200px 1fr auto;gap:8px;align-items:end}
+@media (max-width:600px){.diary-add{grid-template-columns:1fr}}
+.warn-adj{margin-top:6px}
+.meter{background:#fff;border:1px solid var(--line);border-radius:var(--r-lg);padding:var(--s4);margin-bottom:var(--s4)}
+.meter-bar{display:grid;grid-template-columns:repeat(6,1fr);gap:4px;margin:8px 0}
+.meter-bar i{height:10px;border-radius:3px;background:var(--line-soft)}
+.meter-bar i.on{background:var(--green)}
+.meter b{font-family:var(--display);font-size:1.25rem}
+.meter small{color:var(--muted);display:block}
+/* the slip */
+.slip-col{position:sticky;top:88px}
+@media (max-width:960px){.slip-col{position:static}}
+.slip{background:#fff;border-radius:var(--r-sm);box-shadow:0 1px 0 var(--line),0 24px 40px -24px rgba(35,28,24,.5);position:relative;overflow:hidden}
+.slip::before{content:"";display:block;height:14px;background:radial-gradient(circle at 7px 0,var(--paper) 6px,transparent 6.5px) 0 0/14px 14px repeat-x}
+.slip-head{display:flex;justify-content:space-between;align-items:center;gap:var(--s2);padding:var(--s2) var(--s5) var(--s3);border-bottom:2px dashed var(--line)}
+.slip-head h2{font-size:1.25rem;font-weight:800}
+.slip-body{padding:var(--s4) var(--s5) var(--s5);font-size:.9375rem;line-height:1.65;white-space:pre-wrap;word-wrap:break-word;min-height:200px}
+.slip-body .hole{background:var(--clay-soft);border-bottom:2px dashed var(--brick);padding:0 4px;color:var(--brick-dark);font-weight:700;white-space:nowrap}
+.slip textarea{display:block;width:100%;border:0;padding:var(--s4) var(--s5) var(--s5);min-height:420px;font:inherit;font-size:.9375rem;line-height:1.65;resize:vertical;outline:none}
+.slip textarea:focus{box-shadow:inset 0 0 0 3px var(--brick-soft)}
+.slip-actions{display:flex;flex-wrap:wrap;gap:var(--s2);margin-top:var(--s4)}
+.privacy{font-size:.875rem;color:var(--muted);margin-top:var(--s3);display:flex;gap:8px}
+.channel-tabs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:var(--s4)}
+.next{list-style:none;padding:0;margin:0;counter-reset:n}
+.next li{display:grid;grid-template-columns:40px 1fr;gap:var(--s3);padding:var(--s4) 0;border-bottom:1px solid var(--line)}
+.next li::before{counter-increment:n;content:counter(n);width:36px;height:36px;border-radius:50%;background:var(--ink);color:#fff;display:flex;align-items:center;justify-content:center;font:800 1rem var(--display)}
+.next li.ok::before{content:"✓";background:var(--green)}
+.next h3{font-size:1.1875rem;font-weight:700;margin-bottom:4px}
+.next p{color:var(--muted);font-size:.9375rem;margin:0 0 8px}
+.check-line{display:flex;gap:8px;align-items:center;font-weight:700;font-size:.875rem;cursor:pointer}
+.check-line input{width:20px;height:20px;accent-color:var(--green)}
+.toast{visibility:hidden;position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(120px);background:var(--ink);color:#fff;padding:12px 20px;border-radius:var(--r-pill);font-weight:700;z-index:200;transition:transform .25s}
+.toast.show{visibility:visible;transform:translateX(-50%) translateY(0)}
+.inline-check{background:#fff;border:1px solid var(--line);border-radius:var(--r-lg);padding:var(--s4);margin:var(--s4) 0}
+.verdict{margin-top:var(--s3);border-radius:var(--r-md);padding:var(--s3) var(--s4);font-weight:700}
+.verdict.bad{background:var(--brick-soft);color:var(--brick-dark)}
+.verdict.good{background:var(--green-soft);color:var(--green)}
+
+/* ---------- GUIA ---------- */
+.guide-hero{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:var(--s6);align-items:center;margin-bottom:var(--s7)}
+@media (max-width:860px){.guide-hero{grid-template-columns:1fr}}
+.cover{background:var(--ink);color:#fff;border-radius:var(--r-lg);padding:var(--s6);aspect-ratio:3/4;max-height:520px;display:flex;flex-direction:column;justify-content:space-between;position:relative;overflow:hidden}
+.cover h2{font-size:clamp(2.5rem,5vw,4rem);font-weight:800;font-stretch:70%;line-height:.95}
+.cover p{color:var(--header-muted);font-size:1.125rem}
+.cover svg.bg{position:absolute;right:-40px;bottom:-40px;opacity:.16}
+@media (max-width:860px){.cover{aspect-ratio:auto;max-height:none;gap:var(--s5);padding:var(--s5)}.cover svg.bg{width:200px;height:200px}}
+.toc{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 var(--s5)}
+@media (max-width:600px){.toc{grid-template-columns:1fr}}
+.toc a{display:flex;justify-content:space-between;gap:var(--s3);padding:10px 0;border-bottom:1px solid var(--line);text-decoration:none;color:var(--ink);font-weight:700}
+.toc a span{color:var(--brick-dark);font-family:var(--display);white-space:nowrap}
+.toc a:hover{color:var(--brick-dark)}
+.section-title{font-size:clamp(1.5rem,3vw,2.25rem);font-weight:800;margin:var(--s7) 0 var(--s2)}
+.section-lead{color:var(--muted);max-width:44rem;margin-bottom:var(--s5)}
+.acc{border-top:1.5px solid var(--ink)}
+.acc details{border-bottom:1px solid var(--line)}
+.acc summary{list-style:none;display:flex;justify-content:space-between;align-items:center;gap:var(--s3);padding:var(--s4) 0;cursor:pointer;font:700 1.1875rem/1.3 var(--body)}
+.acc summary::-webkit-details-marker{display:none}
+.acc summary small{font:700 .875rem var(--display);color:var(--brick-dark);white-space:nowrap;margin-left:auto}
+.acc summary::after{content:"+";font:400 1.75rem/1 var(--display);width:24px;text-align:center;flex:none}
+.acc details[open] summary::after{content:"−"}
+.acc .body{padding:0 0 var(--s5);max-width:46rem}
+.acc ul{padding-left:1.2em;margin:0 0 var(--s3)}
+.acc li{margin:4px 0}
+.dodont{display:grid;grid-template-columns:1fr 1fr;gap:var(--s3)}
+@media (max-width:600px){.dodont{grid-template-columns:1fr}}
+.dodont>div{border-radius:var(--r-md);padding:var(--s3) var(--s4)}
+.dodont .yes{background:var(--green-soft)} .dodont .no{background:var(--brick-soft)}
+.dodont h4{font-size:1.0625rem;margin-bottom:6px}
+.quiz{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--s3)}
+@media (max-width:760px){.quiz{grid-template-columns:1fr}}
+.q{background:#fff;border:1px solid var(--line);border-radius:var(--r-lg);padding:var(--s4)}
+.q p{font-weight:700;font-size:1.0625rem;margin-bottom:var(--s3)}
+.q .seg .chip{min-width:72px;justify-content:center}
+.q .ans{margin-top:var(--s3);font-size:.9375rem;border-radius:var(--r-md);padding:10px 12px}
+.q .ans.right{background:var(--green-soft)} .q .ans.wrong{background:var(--brick-soft)}
+.calc{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:var(--s5)}
+@media (max-width:760px){.calc{grid-template-columns:1fr}}
+.big-num{font:800 clamp(2rem,4vw,3rem)/1 var(--display);font-stretch:80%}
+.channels{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--s3)}
+@media (max-width:900px){.channels{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:560px){.channels{grid-template-columns:1fr}}
+.channel{background:#fff;border:1px solid var(--line);border-radius:var(--r-lg);padding:var(--s4);display:flex;flex-direction:column;gap:6px}
+.channel h3{font-size:1.1875rem;font-weight:700}
+.channel p{font-size:.9375rem;color:var(--muted);margin:0;flex:1}
+.channel a{font-weight:700;font-size:.9375rem}
+.gloss-list{columns:2;column-gap:var(--s6)}
+@media (max-width:700px){.gloss-list{columns:1}}
+.gloss-list div{break-inside:avoid;padding:10px 0;border-bottom:1px solid var(--line-soft)}
+.gloss-list dt{font-weight:700} .gloss-list dd{margin:2px 0 0;color:var(--muted);font-size:.9375rem}
+.figures{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--s3);margin-top:var(--s5)}
+.figures div{border-top:3px solid var(--ink);padding-top:var(--s2);font-size:.9375rem;color:var(--muted)}
+.figures b{display:block;font:800 2rem/1.1 var(--display);color:var(--ink);font-stretch:80%}
+@media (max-width:600px){.figures{grid-template-columns:1fr}}
+
+/* ---------- JURÍDICO / DADOS ---------- */
+.tl{list-style:none;margin:0;padding:0;position:relative}
+.tl::before{content:"";position:absolute;left:7px;top:6px;bottom:6px;width:2px;background:var(--line)}
+.tl li{position:relative;padding:0 0 var(--s5) var(--s6)}
+.tl li::before{content:"";position:absolute;left:0;top:6px;width:16px;height:16px;border-radius:50%;background:var(--paper);border:3px solid var(--brick)}
+.tl .when{font:800 1.125rem var(--display);font-stretch:85%}
+.tl .card{background:#fff;border:1px solid var(--line);border-radius:var(--r-lg);padding:var(--s4);margin-top:var(--s2)}
+.tl .card h3{font-size:1.1875rem;font-weight:700;font-family:var(--body);line-height:1.35;margin-bottom:var(--s2)}
+.tl dl{display:grid;grid-template-columns:7rem 1fr;gap:4px 12px;font-size:.9375rem;margin:0 0 var(--s3)}
+.tl dt{color:var(--muted)} .tl dd{margin:0}
+.law{background:#fff;border:1px solid var(--line);border-radius:var(--r-lg);padding:var(--s4)}
+.law h3{font-size:1.125rem;font-weight:700;font-family:var(--body);margin-bottom:6px}
+.law p{font-size:.9375rem;color:var(--muted);margin:0}
+.progress{height:12px;background:var(--line-soft);border-radius:6px;overflow:hidden;margin:var(--s2) 0}
+.progress i{display:block;height:100%;background:var(--green);border-radius:6px}
+.table-wrap{background:#fff;border:1px solid var(--line);border-radius:var(--r-lg);overflow:auto}
+.method{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--s4)}
+@media (max-width:760px){.method{grid-template-columns:1fr}}
+.method article{background:#fff;border:1px solid var(--line);border-radius:var(--r-lg);padding:var(--s5)}
+.method h2{font-size:1.375rem;font-weight:800;margin-bottom:var(--s2)}
+
+.parts{display:flex;flex-direction:column;border-top:1.5px solid var(--ink)}
+.part-link{display:grid;grid-template-columns:56px 1fr auto;gap:var(--s3);align-items:center;padding:var(--s3) 0;border-bottom:1px solid var(--line);text-decoration:none;color:var(--ink)}
+.part-link b{display:block;font-size:1.0625rem;line-height:1.3}
+.part-link small{display:block;color:var(--muted);font-size:.875rem;line-height:1.4;margin-top:2px}
+.part-link:hover b{color:var(--brick-dark)}
+.part-n{font:800 2.75rem/1 var(--display);font-stretch:70%;color:var(--brick)}
+.part-p{font:700 .875rem var(--display);color:var(--brick-dark);white-space:nowrap}
+.part{margin-top:var(--s8);scroll-margin-top:88px}
+.part-head{display:grid;grid-template-columns:auto 1fr;gap:var(--s5);align-items:end;margin-bottom:var(--s5)}
+.part-big{font:800 clamp(5rem,12vw,9rem)/.8 var(--display);font-stretch:62%;color:var(--brick)}
+@media (max-width:600px){.part-head{grid-template-columns:1fr;gap:var(--s2)}.part-big{font-size:4.5rem}}
+.part-tool{margin-top:var(--s6)}
+.tool-title{font-size:1.5rem;font-weight:800;margin-bottom:var(--s2)}
+.acc details{scroll-margin-top:88px}
+.dodont .neutral{background:var(--surface);border:1px solid var(--line)}
+.checks{list-style:none;padding:0}
+.checks li{position:relative;padding-left:28px;margin:8px 0}
+.checks li::before{content:"";position:absolute;left:2px;top:4px;width:16px;height:16px;border:2px solid var(--green);border-radius:4px}
+.quote{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-md);padding:var(--s4)}
+.quote .lbl{display:block;font-weight:700;font-size:.875rem;color:var(--muted);margin-bottom:6px}
+.quote .hole{background:var(--clay-soft);border-bottom:2px dashed var(--brick);padding:0 4px;color:var(--brick-dark);font-weight:700}
+/* Denunciar: attention pulse once + megaphone waves */
+.cta-anim{position:relative;isolation:isolate}
+.cta-anim::after{content:"";position:absolute;inset:0;border-radius:inherit;box-shadow:0 0 0 0 rgba(248,232,222,.7);z-index:-1;pointer-events:none}
+.cta-anim.pulse::after{animation:ctaPulse 1.6s cubic-bezier(.2,.6,.3,1) 2}
+@keyframes ctaPulse{0%{box-shadow:0 0 0 0 rgba(248,232,222,.7)}100%{box-shadow:0 0 0 16px rgba(248,232,222,0)}}
+.cta-anim .w1,.cta-anim .w2{opacity:.0;transition:opacity .2s}
+.cta-anim .w1{opacity:1}
+.cta-anim:hover .w1,.cta-anim:focus-visible .w1,.cta-anim.pulse .w1{animation:wave 1s ease-in-out infinite}
+.cta-anim:hover .w2,.cta-anim:focus-visible .w2,.cta-anim.pulse .w2{animation:wave 1s ease-in-out .25s infinite}
+@keyframes wave{0%,100%{opacity:0}40%,70%{opacity:1}}
+.cta-anim svg{transform-origin:30% 50%}
+.cta-anim:hover svg{animation:shake .5s ease-in-out}
+@keyframes shake{0%,100%{transform:rotate(0)}25%{transform:rotate(-10deg)}60%{transform:rotate(6deg)}}
+@media (prefers-reduced-motion:reduce){.cta-anim::after,.cta-anim .w1,.cta-anim .w2,.cta-anim svg{animation:none!important}.cta-anim .w2{opacity:1}}
+
+.contact{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,.7fr);gap:var(--s5);align-items:start}
+@media (max-width:860px){.contact{grid-template-columns:1fr}}
+.contact-topics{grid-template-columns:1fr}
+.mailcard{background:var(--ink);color:#fff;border-radius:var(--r-lg);padding:var(--s5);margin-bottom:var(--s3)}
+.mailcard .lbl{display:block;color:var(--header-muted);font-size:.875rem;margin-bottom:6px}
+.mailcard a{color:var(--clay);font:800 1.375rem/1.2 var(--display);font-stretch:85%;word-break:break-all;text-decoration:none}
+.mailcard a:hover{text-decoration:underline}
+
+.mailcard .mail-addr{display:block;background:none;border:0;padding:0;text-align:left;cursor:pointer;color:var(--clay);font:800 1.375rem/1.2 var(--display);font-stretch:85%;word-break:break-all;text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:4px}
+.mailcard .mail-addr:hover{color:#fff}
+.mailcard .mail-addr:focus-visible{outline-color:var(--clay)}
+.mailcard .mail-hint{display:block;color:var(--header-muted);font-size:.8125rem;margin-top:6px}
+.pop-ov{position:fixed;inset:0;z-index:300;background:rgba(35,28,24,.55);display:flex;align-items:center;justify-content:center;padding:var(--s4);animation:popFade .15s ease-out}
+.pop{position:relative;background:var(--surface);border-radius:var(--r-lg);width:min(440px,100%);padding:var(--s5);box-shadow:0 30px 60px -20px rgba(35,28,24,.6);animation:popIn .18s ease-out}
+.pop h2{font-size:1.5rem;font-weight:800;padding-right:44px;margin-bottom:var(--s2)}
+.pop-x{position:absolute;right:12px;top:12px}
+.pop-to{font-size:.9375rem;margin-bottom:var(--s4);word-break:break-word}
+.pop-to span{color:var(--muted);font-size:.875rem}
+.pop-list{display:flex;flex-direction:column;gap:8px}
+.pop-opt{display:flex;align-items:center;gap:var(--s3);width:100%;min-height:60px;padding:10px 14px;border:1.5px solid var(--line);border-radius:var(--r-md);background:#fff;color:var(--ink);text-decoration:none;text-align:left;cursor:pointer;font:inherit}
+.pop-opt:hover{border-color:var(--ink);background:var(--paper)}
+.pop-opt b{display:block;font-size:1rem}
+.pop-opt small{display:block;color:var(--muted);font-size:.8125rem}
+.pop-ic{flex:none;width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font:800 1rem var(--display);color:#fff}
+.pop-ic.g{background:var(--brick)} .pop-ic.o{background:var(--green)} .pop-ic.a{background:var(--ink)} .pop-ic.c{background:var(--clay);color:var(--ink)}
+.pop-note{font-size:.875rem;color:var(--muted);margin:var(--s3) 0 0}
+@keyframes popFade{from{opacity:0}to{opacity:1}}
+@keyframes popIn{from{opacity:0;transform:translateY(8px) scale(.98)}to{opacity:1;transform:none}}
+@media (max-width:560px){.pop-ov{align-items:flex-end;padding:0}.pop{border-radius:var(--r-lg) var(--r-lg) 0 0;padding-bottom:calc(var(--s5) + env(safe-area-inset-bottom))}}
+
+.brand .mark{overflow:visible}
+.brand .lens-g{transform-box:view-box}
+.brand .find{transform-box:fill-box;transform-origin:center}
+.brand.scan .lens-g{animation:lensScan 1.4s cubic-bezier(.45,.05,.25,1) both}
+.brand.scan .find{animation:findPop 1.4s ease-out both}
+@keyframes lensScan{0%{transform:translate(-22px,24px)}30%{transform:translate(-22px,2px)}62%{transform:translate(-6px,26px)}100%{transform:translate(0,0)}}
+@keyframes findPop{0%,78%{opacity:0;transform:scale(.6)}90%{opacity:1;transform:scale(1.15)}100%{opacity:1;transform:scale(1)}}
+@media (prefers-reduced-motion:reduce){.brand.scan .lens-g,.brand.scan .find{animation:none}}
+
+.ml-map{position:absolute;inset:0}
+.map-area.live{background:#E9EAE4}
+.mlpin{background:none;border:0;padding:0;cursor:pointer;width:44px;height:52px;display:flex;align-items:flex-end;justify-content:center;filter:drop-shadow(0 3px 3px rgba(35,28,24,.4));transition:transform .15s;transform-origin:50% 100%}
+.mlpin[aria-pressed="true"]{transform:scale(1.25)}
+.mlpin text{font:800 11px var(--display)}
+.mlpin-wrap.sel{z-index:3}
+.perim.ml{position:static;transform:none}
+.ring-lbl{background:var(--ink);color:#fff;font-size:.75rem;font-weight:700;padding:1px 8px;border-radius:var(--r-pill);pointer-events:none;white-space:nowrap}
+.swatch{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+.map-area .maplibregl-ctrl-bottom-right{transition:right .2s}
+@media (min-width:901px){.has-ficha .maplibregl-ctrl-bottom-right{right:384px}}
+.maplibregl-ctrl-attrib{font-size:11px}
+.map-area.live .legend{bottom:var(--s3)}
+@media (max-width:900px){.map-area.live .legend{max-width:calc(100% - 72px)}}
+.foot{border-top:1px solid var(--line);margin-top:var(--s7);padding:var(--s5) 0 0;font-size:.875rem;color:var(--muted)}
+</style>
+</head>
+<body>
+<a class="skip" href="#conteudo">Pular para o conteúdo</a>
+<header class="top">
+  <div class="top-in">
+    <a class="brand" href="#/mapa" aria-label="HIS.SP, página inicial">
+      <svg class="mark" width="46" height="46" viewBox="14 8 86 86" aria-hidden="true"><defs><clipPath id="hdr-lens"><circle cx="64" cy="44" r="22"/></clipPath></defs><rect x="18" y="14" width="64" height="4" rx="1" fill="#F8E8DE"/><rect x="20" y="21" width="28" height="11" rx="1.5" fill="#C9583A"/><rect x="52" y="21" width="28" height="11" rx="1.5" fill="#C9583A"/><rect x="20" y="35" width="12" height="11" rx="1.5" fill="#C9583A"/><rect x="36" y="35" width="28" height="11" rx="1.5" fill="#C9583A"/><rect x="68" y="35" width="12" height="11" rx="1.5" fill="#C9583A"/><rect x="20" y="49" width="28" height="11" rx="1.5" fill="#C9583A"/><rect x="52" y="49" width="28" height="11" rx="1.5" fill="#C9583A"/><rect x="20" y="63" width="12" height="11" rx="1.5" fill="#C9583A"/><rect x="36" y="63" width="28" height="11" rx="1.5" fill="#C9583A"/><rect x="68" y="63" width="12" height="11" rx="1.5" fill="#C9583A"/><rect x="20" y="77" width="28" height="11" rx="1.5" fill="#C9583A"/><rect x="52" y="77" width="28" height="11" rx="1.5" fill="#C9583A"/><rect x="28" y="33" width="12" height="12" rx="1.5" fill="#231C18"/><rect x="60" y="33" width="12" height="12" rx="1.5" fill="#231C18"/><rect x="28" y="62" width="12" height="12" rx="1.5" fill="#231C18"/><rect x="60" y="62" width="12" height="12" rx="1.5" fill="#231C18"/><g class="lens-g"><line x1="81" y1="61" x2="93" y2="75" stroke="#F8E8DE" stroke-width="10" stroke-linecap="round"/><circle cx="64" cy="44" r="22" fill="#3A2E28"/><g clip-path="url(#hdr-lens)"><rect x="36" y="20" width="26" height="13" rx="2" fill="#C9583A"/><rect x="66" y="20" width="26" height="13" rx="2" fill="#C9583A"/><rect x="28" y="37" width="18" height="13" rx="2" fill="#C9583A"/><rect class="find" x="50" y="37" width="26" height="13" rx="2" fill="#E2A07E"/><rect x="80" y="37" width="18" height="13" rx="2" fill="#C9583A"/><rect x="36" y="54" width="26" height="13" rx="2" fill="#C9583A"/><rect x="66" y="54" width="26" height="13" rx="2" fill="#C9583A"/><rect x="68" y="16" width="20" height="20" rx="2.5" fill="#100C0A"/></g><circle cx="64" cy="44" r="22" fill="none" stroke="#F8E8DE" stroke-width="7"/></g></svg>
+      <span><b>HIS.SP</b><small>Território e participação popular</small></span>
+    </a>
+    <button class="menu-btn" aria-expanded="false" aria-controls="nav" data-act="menu">Menu</button>
+    <nav class="nav" id="nav" aria-label="Seções do site">
+      <a href="#/mapa" data-r="mapa">Mapa</a>
+      <a href="#/guia" data-r="guia">Guia do morador</a>
+      <a href="#/juridico" data-r="juridico">Jurídico</a>
+      <a href="#/cobertura" data-r="cobertura">Cobertura de dados</a>
+      <a href="#/metodologia" data-r="metodologia">Metodologia</a>
+      <a href="#/contato" data-r="contato">Fale conosco</a>
+    </nav>
+    <div class="tools">
+      <div class="size" role="group" aria-label="Tamanho do texto">
+        <button data-size="0" aria-pressed="true" aria-label="Texto normal">A</button>
+        <button data-size="1" aria-pressed="false" aria-label="Texto maior" style="font-size:1.1em">A</button>
+        <button data-size="2" aria-pressed="false" aria-label="Texto bem maior" style="font-size:1.25em">A</button>
+      </div>
+      <a class="btn btn-primary cta-anim" id="cta" href="#/denunciar" data-r="denunciar"><svg width="22" height="20" viewBox="0 0 22 20" aria-hidden="true"><path d="M2 8v4h3l6 4V4L5 8z" fill="currentColor"/><path class="w1" d="M14 7.5a3.5 3.5 0 0 1 0 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path class="w2" d="M16.5 5a7 7 0 0 1 0 10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>Denunciar</a>
+    </div>
+  </div>
+</header>
+<main id="conteudo" tabindex="-1"></main>
+<div class="toast" role="status" aria-live="polite" id="toast"></div>
+
+<script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
+<script>
+(function(){
+"use strict";
+/* ================= DATA ================= */
+var PHASES = {
+  "proposta":{c:"var(--ph-proposta)",hex:"#E2A07E",g:"P"},
+  "em aprovação":{c:"var(--ph-aprov)",hex:"#C2652F",g:"A"},
+  "em obras":{c:"var(--ph-obras)",hex:"#7E3420",g:"O"},
+  "entregue":{c:"var(--ph-entregue)",hex:"#2F5D50",g:"E"}
+};
+var HIS = [
+  {id:"h1",nome:"HIS fictícia 01",end:"Rua fictícia A, 100",tipo:"Empreendimento HIS-2",fase:"em aprovação",un:96,d:220,l:46,t:44,agente:"Incorporadora (fictícia)",nota:"Perto da Chácara: entra na contagem de 500 m."},
+  {id:"h2",nome:"HIS fictícia 02",end:"Rua fictícia B, 240",tipo:"ZEIS 3 (lote ocioso)",fase:"proposta",un:0,d:398,l:33,t:63,agente:"Poder público (fictício)",nota:"Terreno que poderia receber HIS; sem projeto."},
+  {id:"h3",nome:"HIS fictícia 03",end:"Av. fictícia C, 1.020",tipo:"Empreendimento HIS-1",fase:"em obras",un:140,d:947,l:66,t:34,agente:"Incorporadora (fictícia)",nota:"Fora do raio de 500 m."},
+  {id:"h4",nome:"HIS fictícia 04",end:"Rua fictícia D, 55",tipo:"Conjunto já entregue",fase:"entregue",un:320,d:1300,l:60,t:76,agente:"Poder público (fictício)",nota:"Exemplo de conjunto entregue."}
+];
+var TERRS = ["Geral","Zona Sul","Zona Leste","Zona Norte","Centro","Zona Oeste"];
+var CHACARA = {l:38,t:52};
+var CHACARA_LL = [-46.6365,-23.5858];
+function offsetLL(ll,dist,brg){var R=6378137,b=brg*Math.PI/180,lat=ll[1]*Math.PI/180;return [ll[0]+(dist*Math.sin(b))/(R*Math.cos(lat))*180/Math.PI,ll[1]+(dist*Math.cos(b))/R*180/Math.PI]}
+var BRG={h1:55,h2:205,h3:110,h4:320};
+HIS.forEach(function(h){h.ll=offsetLL(CHACARA_LL,h.d,BRG[h.id])});
+var ZONES={"Geral":{c:[-46.6333,-23.5505],z:10.2},"Zona Sul":{c:CHACARA_LL,z:14.6},"Zona Leste":{c:[-46.4700,-23.5450],z:11.6},"Zona Norte":{c:[-46.6200,-23.4800],z:11.6},"Centro":{c:[-46.6360,-23.5470],z:13.6},"Zona Oeste":{c:[-46.7200,-23.5700],z:11.6}};
+var JUR = [
+  {date:"16/12/2024",y:2024,inst:"CONPRESP, proc. 6025.2019/0008103-5",reg:"Comunicado de apelação do MPSP e da Associação dos Moradores da Vila Mariana, 13ª Câmara de Direito Público do TJSP",parte:"Vampre II Empreendimentos Imobiliários SPE Ltda.",status:"Ciência do conselho; andamento no TJSP a verificar",fonte:"Síntese da 813ª reunião do CONPRESP (16/12/2024)",tipo:"Judicial"},
+  {date:"nov/2021",y:2021,inst:"CONPRESP",reg:"Aprovação de edifícios de até 50 m na área da Chácara",parte:"Vampré Empreendimentos (citada na imprensa)",status:"Resolução a confirmar",fonte:"Istoé Dinheiro, 22/11/2021",tipo:"Patrimônio"}
+];
+var LAWS = [
+  {n:"Decreto 64.244/2025, art. 7º, VII",t:"Proíbe a temporada em HIS",d:"Aluguel de curta duração não conta como moradia social. Anunciar HIS em plataforma de temporada não tem validade legal e pode levar à perda dos incentivos."},
+  {n:"Decreto 64.244/2025, art. 7º-A",t:"Limita o aluguel a 30%",d:"O aluguel de uma HIS pode ser, no máximo, 30% da renda da faixa da unidade, em contrato residencial de longa duração."},
+  {n:"Decreto 64.244/2025, art. 6º, §2º",t:"Dá 30 dias à fila pública",d:"Antes de vender uma HIS-1 privada, a empresa avisa a SEHAB, que tem 30 dias para indicar famílias inscritas nos programas públicos."},
+  {n:"Decreto 63.130/2024",t:"Exige ateste de renda e trava de 10 anos",d:"Cria o ateste de renda prévio e a averbação na matrícula: a unidade fica destinada à HIS por 10 anos."},
+  {n:"Decreto 64.895/2026",t:"Atualiza tetos e faixas",d:"Reajusta as faixas de renda e os preços máximos de venda pelo INCC (valores de janeiro de 2026)."},
+  {n:"Lei 16.050/2014 (PDE), arts. 46 e 47",t:"Define o que é HIS e HMP",d:"O Plano Diretor cria as categorias e os incentivos. Redação atual dada pela Lei 17.975/2023."}
+];
+var DATA_DIR = "dados/";
+var LAYERS = [
+  {id:"distritos",n:"Distritos",f:"distritos.geojson",src:"GeoSampa / Prefeitura",kind:"line",color:"#231C18"},
+  {id:"his",n:"HIS e ZEIS",f:"his.geojson",src:"GeoSampa, SEHAB, CDHU",kind:"mixed",color:"#A4472A"},
+  {id:"his_mock",n:"HIS possíveis (demonstração, fictício)",f:"",src:"Dados fictícios, no próprio site",builtin:true,ok:true,count:4},
+  {id:"risco",n:"Risco geológico e inundação",f:"risco.geojson",src:"GeoSampa, IPT",kind:"fill",color:"#C2652F",env:true},
+  {id:"contaminadas",n:"Áreas contaminadas",f:"contaminadas.geojson",src:"CETESB",kind:"mixed",color:"#7E3420",env:true},
+  {id:"app",n:"APP e cursos d’água",f:"app.geojson",src:"GeoSampa",kind:"line",color:"#3F6E86",env:true},
+  {id:"vegetacao",n:"Cobertura vegetal",f:"vegetacao.geojson",src:"MapBiomas, PMMA",kind:"fill",color:"#2F5D50",env:true},
+  {id:"protecoes",n:"Proteções",f:"protecoes.geojson",src:"CONPRESP, CONDEPHAAT, IPHAN, GeoSampa",kind:"line",color:"#C9583A",dash:true,env:true}
+];
+LAYERS.forEach(function(l){if(!l.builtin){l.ok=false;l.checking=true;l.on=true}});
+function layerStatus(l){if(l.checking)return "verificando…";if(!l.ok)return "sem arquivo";return "carregada ("+l.count+(l.builtin?", demo":"")+")"}
+function envLoaded(){return LAYERS.filter(function(l){return l.env&&l.ok})}
+function loadLayers(){
+  var jobs=LAYERS.filter(function(l){return !l.builtin}).map(function(l){
+    return fetch(DATA_DIR+l.f,{cache:"no-cache"}).then(function(r){if(!r.ok)throw new Error("404");return r.json()}).then(function(j){
+      var fs=j&&j.type==="FeatureCollection"?j.features:(j&&j.type==="Feature"?[j]:null);
+      if(!fs)throw new Error("not geojson");
+      l.data={type:"FeatureCollection",features:fs};l.ok=true;l.count=fs.length;
+    }).catch(function(){l.ok=false}).then(function(){l.checking=false});
+  });
+  Promise.all(jobs).then(function(){addDataLayers();if(S.route==="cobertura"||S.route==="mapa")rerenderKeepFocus()});
+}
+var CAPS = {
+  "HIS-1":{renda:4863,pc:810.5,venda:276102.20,sm:3},
+  "HIS-2":{renda:9726,pc:1621,venda:383636.74,sm:6},
+  "HMP":{renda:16210,pc:2431.5,venda:537672.71,sm:10}
+};
+var KINDS = [
+  {k:"temporada",t:"Aluguel por temporada",d:"Airbnb, Booking e similares, ou hospedagem por menos de 90 dias."},
+  {k:"preco",t:"Preço acima do máximo",d:"Venda ou aluguel acima do teto, ou cobrança de taxa “por fora”."},
+  {k:"renda",t:"Venda sem conferir a renda",d:"Sem ateste de renda, sem dizer a categoria da unidade ou com pressa para fechar."},
+  {k:"hotel",t:"Uso como hotel, hostel ou flat",d:"Recepção, diárias, enxoval e limpeza como em hotel."},
+  {k:"obra",t:"Problema com obra",d:"Barulho, calçada bloqueada, entulho ou trânsito parado."}
+];
+var SIGNS = {
+  temporada:["Muita gente nova com mala, a cada poucos dias","Cofre de chave na portaria ou na grade","Senha de fechadura trocada a cada estadia","Anúncio online com fotos do prédio e preço por diária","Avaliações de hóspedes no anúncio","Vários anúncios do mesmo prédio pelo mesmo perfil","Entrega frequente de enxoval ou limpeza","Estranhos nas áreas comuns, reclamações de vizinhos"],
+  preco:["Preço anunciado acima do teto da categoria","Pedido de “taxa de cessão” ou pagamento por fora","Aluguel acima de 30% da renda da faixa","Propaganda sem dizer a categoria da unidade","Pressa para fechar o negócio"],
+  renda:["Ninguém pediu o ateste de renda","Propaganda sem dizer a categoria da unidade","Prédio sem placa informativa","Venda de HIS-1 sem aviso à SEHAB","Pressa para fechar o negócio"],
+  hotel:["Recepção ou check-in no prédio","Preço por diária","Enxoval e limpeza a cada saída","Muita gente nova com mala, a cada poucos dias","Anúncio como hotel, hostel ou flat"],
+  obra:["Barulho fora do horário","Calçada bloqueada ou sem passagem","Rua interditada, entulho ou lama","Caminhão ou concretagem parando o trânsito","Obra sem placa ou sem alvará visível"]
+};
+var ADJ = ["absurdo","absurda","safado","safada","bandido","bandida","ladrão","ladrao","criminoso","criminosa","vagabundo","vagabunda","picareta","pilantra","nojento","nojenta","folgado","folgada","sem vergonha","sem-vergonha","corrupto","corrupta","mafioso","golpista","canalha"];
+var CHANNELS = [
+  {k:"156",t:"156 (Prefeitura)"},
+  {k:"sehab",t:"E-mail à SEHAB"},
+  {k:"sindico",t:"Síndico"},
+  {k:"plataforma",t:"Plataforma do anúncio"}
+];
+
+/* ================= STATE ================= */
+var S = {
+  route:"mapa",
+  map:{sel:"c",tab:"geral",q:"",terr:"Zona Sul",showHis:true,ring:true,ph:{"proposta":true,"em aprovação":true,"em obras":true,"entregue":true},filtersOpen:false},
+  rep:null,
+  guide:{quiz:{},calc:{cat:"HIS-1",mode:"venda",val:""},gq:""},
+  cob:"todas",
+  jur:"todos",
+  contact:{topic:"",msg:""}
+};
+function freshReport(){
+  return {step:1,max:1,kind:"",hisId:"",predio:"",end:"",torre:"",unid:"",placa:"nao-sei",signs:[],diary:[],link:"",codigo:"",desc:"",
+    cap:{cat:"HIS-1",mode:"venda",val:""},channel:"156",sigilo:true,edited:false,text:"",proto:"",protoDate:"",done:{}};
+}
+S.rep = freshReport();
+
+/* ================= HELPERS ================= */
+function $(s,r){return (r||document).querySelector(s)}
+function esc(v){return String(v==null?"":v).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})}
+function brl(n){return n.toLocaleString("pt-BR",{style:"currency",currency:"BRL"})}
+function parseMoney(v){v=String(v||"").replace(/[^\d,\.]/g,"");if(!v)return NaN;if(v.indexOf(",")>-1){v=v.replace(/\./g,"").replace(",",".")}else if((v.match(/\./g)||[]).length>1||/\.\d{3}$/.test(v)){v=v.replace(/\./g,"")}return parseFloat(v)}
+function fmtDT(v){if(!v)return"";var d=new Date(v);if(isNaN(d))return v;return d.toLocaleDateString("pt-BR")+", "+String(d.getHours()).padStart(2,"0")+"h"+(d.getMinutes()?String(d.getMinutes()).padStart(2,"0"):"")}
+function fmtD(d){return d.toLocaleDateString("pt-BR")}
+function toast(m){var t=$("#toast");t.textContent=m;t.classList.add("show");clearTimeout(toast._t);toast._t=setTimeout(function(){t.classList.remove("show")},2200)}
+var ICON={
+  info:'<svg width="18" height="18" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M10 9v5M10 6v.5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>',
+  alert:'<svg width="18" height="18" viewBox="0 0 20 20" aria-hidden="true"><path d="M10 2 19 18H1z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M10 8v4M10 14.5v.5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>',
+  lock:'<svg width="18" height="18" viewBox="0 0 20 20" aria-hidden="true"><rect x="3" y="9" width="14" height="9" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M6.5 9V6.5a3.5 3.5 0 0 1 7 0V9" fill="none" stroke="currentColor" stroke-width="2"/></svg>',
+  x:'<svg width="18" height="18" viewBox="0 0 20 20" aria-hidden="true"><path d="M5 5l10 10M15 5 5 15" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>'
+};
+function note(cls,icon,html){return '<div class="note '+cls+'">'+ICON[icon]+'<div>'+html+'</div></div>'}
+
+/* ================= ROUTER ================= */
+var ROUTES = ["mapa","denunciar","guia","juridico","cobertura","metodologia","contato"];
+var CONTACT_EMAIL = "equipehis.sp@gmail.com";
+function parseHash(){
+  var h=(location.hash||"").replace(/^#\/?/,"");
+  var parts=h.split("?"); var r=parts[0]||"mapa";
+  var q={}; (parts[1]||"").split("&").forEach(function(kv){if(!kv)return;var p=kv.split("=");q[decodeURIComponent(p[0])]=decodeURIComponent(p[1]||"")});
+  if(r.indexOf("guia/")===0){q.anchor=r.slice(5);r="guia"}
+  return {r:ROUTES.indexOf(r)>-1?r:"mapa",q:q};
+}
+function go(){
+  var p=parseHash(); var changed=S.route!==p.r; S.route=p.r;
+  if(p.r==="denunciar"&&p.q.his){var h=HIS.find(function(x){return x.id===p.q.his});if(h){S.rep=freshReport();S.rep.hisId=h.id;S.rep.predio=h.nome;S.rep.end=h.end;history.replaceState(null,"","#/denunciar")}}
+  document.querySelectorAll("[data-r]").forEach(function(a){if(a.dataset.r===p.r)a.setAttribute("aria-current","page");else a.removeAttribute("aria-current")});
+  $("#nav").classList.remove("open");$(".menu-btn").setAttribute("aria-expanded","false");
+  render();
+  if(changed&&(p.r==="guia"||p.r==="contato"))setTimeout(ctaPulse,600);
+  if(p.q.anchor){setTimeout(function(){var el=document.getElementById(p.q.anchor);if(el){if(el.tagName==="DETAILS")el.open=true;el.scrollIntoView({block:"start"});var s=el.querySelector("summary");if(s)s.focus()}},30)}
+  else if(changed){window.scrollTo(0,0);$("#conteudo").focus({preventScroll:true})}
+}
+function render(){
+  var html=({mapa:vMapa,denunciar:vDenunciar,guia:vGuia,juridico:vJuridico,cobertura:vCobertura,metodologia:vMetodologia,contato:vContato})[S.route]();
+  $("#conteudo").innerHTML=html;
+  document.title={mapa:"Mapa",denunciar:"Denunciar",guia:"Guia do morador",juridico:"Jurídico",cobertura:"Cobertura de dados",metodologia:"Metodologia",contato:"Fale conosco"}[S.route]+" · HIS.SP";
+  if(S.route==="denunciar")afterReport();
+  if(S.route==="mapa")syncMap();
+}
+function rerenderKeepFocus(){
+  var a=document.activeElement, id=a&&a.id, ss=a&&a.selectionStart, se=a&&a.selectionEnd;
+  render();
+  if(id){var el=document.getElementById(id);if(el){el.focus();try{if(ss!=null)el.setSelectionRange(ss,se)}catch(e){}}}
+}
+
+/* ================= MAPA ================= */
+function mapData(){
+  var m=S.map,q=m.q.trim().toLowerCase();
+  var inTerr=m.terr==="Geral"||m.terr==="Zona Sul";
+  var vis=HIS.filter(function(p){return inTerr&&m.showHis&&m.ph[p.fase]&&(!q||(p.nome+" "+p.tipo+" "+p.fase).toLowerCase().indexOf(q)>-1)});
+  var near=vis.filter(function(p){return p.d<=500});
+  return {vis:vis,near:near,inTerr:inTerr,units:near.reduce(function(a,p){return a+p.un},0)};
+}
+function pinSVG(p){var ph=PHASES[p.fase];return '<svg width="34" height="44" viewBox="0 0 24 32" aria-hidden="true"><path d="M12 1C5.9 1 1 5.9 1 12c0 8.3 11 19 11 19s11-10.7 11-19C23 5.9 18.1 1 12 1z" fill="'+ph.hex+'" stroke="#fff" stroke-width="1.8"/><text x="12" y="16" text-anchor="middle" style="fill:'+(p.fase==="proposta"?"#231C18":"#fff")+'">'+ph.g+'</text></svg>'}
+function baseMap(){
+  return '<svg class="map-svg" viewBox="0 0 1000 840" preserveAspectRatio="xMidYMid slice" aria-hidden="true">'+
+  '<rect width="1000" height="840" fill="#DCDDD5"/>'+
+  '<g fill="#E8E9E2">'+(function(){var s="";for(var x=0;x<1000;x+=90)for(var y=0;y<840;y+=78){if((x*7+y*3)%5===0)continue;s+='<rect x="'+(x+8)+'" y="'+(y+8)+'" width="'+(72-(x%3)*6)+'" height="'+(60-(y%4)*4)+'" rx="3"/>'}return s})()+'</g>'+
+  '<path d="M260 330c40-30 120-40 170-10s60 110 10 150-150 40-190 0-30-110 10-140z" fill="#C9D3B8"/>'+
+  '<g fill="#9FB08A">'+[[300,360],[340,350],[380,372],[320,400],[360,410],[400,420],[290,430]].map(function(c){return '<circle cx="'+c[0]+'" cy="'+c[1]+'" r="11"/>'}).join("")+'</g>'+
+  '<path d="M600 540h250v190H600z" fill="#C9D3B8"/>'+
+  '<path d="M0 640C220 600 420 700 640 660s260-50 360-30" stroke="#B8CCD0" stroke-width="16" fill="none"/>'+
+  '<path d="M0 300C250 280 450 400 1000 360M300 0C340 250 280 500 330 840M700 0C660 300 740 560 690 840M0 560C300 520 600 640 1000 600" stroke="#fff" stroke-width="12" fill="none"/>'+
+  '<path d="M0 180 1000 240M520 0 560 840M150 0 120 840M860 0 900 840" stroke="#F7F7F3" stroke-width="6" fill="none"/>'+
+  '<path d="M80 0C200 200 420 220 560 420s200 300 260 420" stroke="#231C18" stroke-width="3" stroke-dasharray="10 6" fill="none" opacity=".55"/>'+
+  '<g font-family="Atkinson Hyperlegible,sans-serif" font-size="15" fill="#5A524C"><text x="610" y="560">Parque (ilustrativo)</text><text x="70" y="290" transform="rotate(-2 70 290)">Avenida (ilustrativa)</text><text x="575" y="440" transform="rotate(58 575 440)">Linha de metrô (ilustrativa)</text></g>'+
+  '</svg>';
+}
+var ML={map:null,el:null,markers:{},perim:null,ringLbl:null,ready:false,lastTerr:null,lastSel:null,failed:false};
+function mlOn(){return typeof window.maplibregl!=="undefined"&&!ML.failed}
+function circlePoly(c,r){var pts=[];for(var i=0;i<=64;i++)pts.push(offsetLL(c,r,i*360/64));return {type:"Feature",properties:{},geometry:{type:"Polygon",coordinates:[pts]}}}
+function createMap(area){
+  ML.el=document.createElement("div");ML.el.className="ml-map";area.insertBefore(ML.el,area.firstChild);
+  var z=ZONES[S.map.terr]||ZONES["Zona Sul"];
+  var map=ML.map=new maplibregl.Map({container:ML.el,center:z.c,zoom:z.z,minZoom:9,maxZoom:18,dragRotate:false,pitchWithRotate:false,attributionControl:{compact:true},
+    style:{version:8,sources:{osm:{type:"raster",tiles:["https://tile.openstreetmap.org/{z}/{x}/{y}.png"],tileSize:256,maxzoom:19,attribution:'© <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>'}},
+      layers:[{id:"bg",type:"background",paint:{"background-color":"#E9EAE4"}},{id:"osm",type:"raster",source:"osm",paint:{"raster-saturation":-0.55,"raster-opacity":0.95}}]}});
+  map.touchZoomRotate.disableRotation();
+  map.addControl(new maplibregl.NavigationControl({showCompass:false}),"bottom-right");
+  ML.lastTerr=S.map.terr;
+  HIS.forEach(function(h){
+    var w=document.createElement("div");w.className="mlpin-wrap";
+    w.innerHTML='<button class="mlpin" data-act="pick" data-id="'+h.id+'" aria-pressed="false" aria-label="'+esc(h.nome+", "+h.fase+", a "+h.d+" metros da Chácara")+'">'+pinSVG(h)+'</button>';
+    ML.markers[h.id]=new maplibregl.Marker({element:w,anchor:"bottom"}).setLngLat(h.ll).addTo(map);
+  });
+  var pw=document.createElement("div");
+  pw.innerHTML='<button class="perim ml" data-act="pick" data-id="c" aria-pressed="false"><span class="dot" style="background:var(--clay)"></span>Chácara das Jaboticabeiras</button>';
+  ML.perim=new maplibregl.Marker({element:pw,anchor:"center"}).setLngLat(CHACARA_LL).addTo(map);
+  var rl=document.createElement("div");rl.className="ring-lbl";rl.textContent="500 m";
+  ML.ringLbl=new maplibregl.Marker({element:rl,anchor:"center"}).setLngLat(offsetLL(CHACARA_LL,500,0)).addTo(map);
+  map.on("load",function(){
+    map.addSource("ring",{type:"geojson",data:circlePoly(CHACARA_LL,500)});
+    map.addLayer({id:"ring-fill",type:"fill",source:"ring",paint:{"fill-color":"#A4472A","fill-opacity":0.07}});
+    map.addLayer({id:"ring-line",type:"line",source:"ring",paint:{"line-color":"#231C18","line-width":2,"line-dasharray":[3,2]}});
+    ML.ready=true;addDataLayers();syncMap();
+  });
+}
+var POLY=["match",["geometry-type"],["Polygon","MultiPolygon"],true,false];
+var LINEISH=["match",["geometry-type"],["Polygon","MultiPolygon","LineString","MultiLineString"],true,false];
+var PTS=["match",["geometry-type"],["Point","MultiPoint"],true,false];
+function addDataLayers(){
+  if(!ML.ready)return;
+  var map=ML.map;
+  LAYERS.forEach(function(l){
+    if(!l.ok||l.builtin||map.getSource("d-"+l.id))return;
+    map.addSource("d-"+l.id,{type:"geojson",data:l.data});
+    map.addLayer({id:"d-"+l.id+"-fill",type:"fill",source:"d-"+l.id,filter:POLY,paint:{"fill-color":l.color,"fill-opacity":l.kind==="line"?0:0.2}},"ring-fill");
+    var lp={"line-color":l.color,"line-width":l.kind==="line"?1.6:1};if(l.dash)lp["line-dasharray"]=[2,2];
+    map.addLayer({id:"d-"+l.id+"-line",type:"line",source:"d-"+l.id,filter:LINEISH,paint:lp},"ring-fill");
+    map.addLayer({id:"d-"+l.id+"-pt",type:"circle",source:"d-"+l.id,filter:PTS,paint:{"circle-radius":5,"circle-color":l.color,"circle-stroke-color":"#fff","circle-stroke-width":1.5}},"ring-fill");
+  });
+  syncDataVisibility();
+}
+function syncDataVisibility(){
+  if(!ML.ready)return;
+  LAYERS.forEach(function(l){if(!ML.map.getSource("d-"+l.id))return;["-fill","-line","-pt"].forEach(function(x){ML.map.setLayoutProperty("d-"+l.id+x,"visibility",l.on?"visible":"none")})});
+}
+function syncMap(){
+  if(S.route!=="mapa"||!mlOn())return;
+  var area=$(".map-area");if(!area)return;
+  try{
+    if(!ML.map)createMap(area);
+    else if(ML.el.parentNode!==area)area.insertBefore(ML.el,area.firstChild);
+    ML.map.resize();
+    var m=S.map,d=mapData(),ids=d.vis.map(function(p){return p.id});
+    HIS.forEach(function(h){var el=ML.markers[h.id].getElement(),b=el.querySelector("button");el.style.display=ids.indexOf(h.id)>-1?"":"none";b.setAttribute("aria-pressed",String(m.sel===h.id));el.classList.toggle("sel",m.sel===h.id)});
+    var pe=ML.perim.getElement();pe.style.display=d.inTerr?"":"none";pe.querySelector("button").setAttribute("aria-pressed",String(m.sel==="c"));
+    var ringOn=m.ring&&d.inTerr;ML.ringLbl.getElement().style.display=ringOn?"":"none";
+    if(ML.ready){["ring-fill","ring-line"].forEach(function(id){ML.map.setLayoutProperty(id,"visibility",ringOn?"visible":"none")});syncDataVisibility()}
+    var wide=window.innerWidth>900,pad={top:0,bottom:0,left:0,right:($(".map-area .ficha")&&wide)?384:0};
+    var still=window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if(m.terr!==ML.lastTerr){ML.lastTerr=m.terr;var z=ZONES[m.terr];ML.map.flyTo({center:z.c,zoom:z.z,padding:pad,duration:still?0:1200})}
+    else if(m.sel!==ML.lastSel&&m.sel&&m.sel!=="c"){var h=HIS.find(function(x){return x.id===m.sel});if(h)ML.map.easeTo({center:h.ll,padding:pad,duration:still?0:600})}
+    ML.lastSel=m.sel;
+  }catch(e){ML.failed=true;if(window.console)console.warn("MapLibre indisponível:",e);render()}
+}
+function vMapa(){
+  var m=S.map,d=mapData(),isC=m.sel==="c",cur=HIS.find(function(p){return p.id===m.sel});
+  var closed=m.sel===null||!mapData().inTerr;
+  if(!isC&&!cur&&!closed){m.sel="c";isC=true}
+  var live=mlOn();
+  var ringPx=Math.max(180,Math.round(Math.min(window.innerWidth,1200)*0.24));
+  var f='<aside class="filters'+(m.filtersOpen?" open":"")+'" id="filtros" aria-label="Filtros do mapa">'+
+    '<div class="stats"><div><b>5</b>zonas</div><div><b>1</b>perímetro</div><div><b>2</b>registros jurídicos</div></div>'+
+    '<h2>Como usar</h2><ol class="how"><li>Escolha uma zona e filtre por fase.</li><li>Toque num pino para abrir a ficha.</li><li>Viu algo errado? Toque em “Denunciar esta HIS”.</li></ol>'+
+    '<h2>Camadas</h2>'+
+    '<label class="toggle"><input type="checkbox" data-act="toggleHis" '+(m.showHis?"checked":"")+'><span>HIS possíveis, demonstração<small>Dados fictícios · 4 no recorte</small></span></label>'+
+    '<label class="toggle"><input type="checkbox" data-act="toggleRing" '+(m.ring?"checked":"")+'><span>Raio de 500 m da Chácara<small>Conta as HIS próximas ao perímetro</small></span></label>'+
+    LAYERS.filter(function(l){return !l.builtin&&l.ok&&!l.env}).map(function(l){return '<label class="toggle"><input type="checkbox" data-act="toggleLayer" data-id="'+l.id+'" '+(l.on?"checked":"")+'><span><i class="swatch" style="background:'+l.color+'"></i>'+esc(l.n)+'<small>'+l.count+' feições · '+esc(l.src)+'</small></span></label>'}).join("")+
+    '<h2>Fase do empreendimento</h2><div class="seg">'+
+    Object.keys(PHASES).map(function(k){var on=m.ph[k];return '<button class="chip ph'+(on?"":" off")+'" aria-pressed="'+on+'" data-act="phase" data-k="'+esc(k)+'"><span class="dot" style="background:'+PHASES[k].c+'"></span>'+esc(k)+'</button>'}).join("")+
+    '</div>'+
+    '<h2>Ambiental</h2>'+(envLoaded().length?envLoaded().map(function(l){return '<label class="toggle"><input type="checkbox" data-act="toggleLayer" data-id="'+l.id+'" '+(l.on?"checked":"")+'><span><i class="swatch" style="background:'+l.color+'"></i>'+esc(l.n)+'<small>'+l.count+' feições · '+esc(l.src)+'</small></span></label>'}).join("")+'<p style="font-size:.875rem;color:var(--muted)"><a href="#/cobertura">Ver todas as camadas</a></p>':'<p style="font-size:.9375rem;color:var(--muted)">Risco, áreas contaminadas e proteções ainda não têm arquivo. <a href="#/cobertura">Ver o que falta</a>.</p>')+
+  '</aside>';
+  var pins=d.vis.map(function(p){return '<button class="pin" style="left:'+p.l+'%;top:'+p.t+'%" aria-pressed="'+(m.sel===p.id)+'" aria-label="'+esc(p.nome+", "+p.fase+", a "+p.d+" metros da Chácara")+'" data-act="pick" data-id="'+p.id+'">'+pinSVG(p)+'</button>'}).join("");
+  var ficha;
+  if(closed){ficha='';}
+  else if(isC){
+    var tabs=[["geral","Visão geral"],["jur","Jurídico"],["amb","Ambiente"]];
+    ficha='<section class="ficha" aria-label="Ficha do perímetro"><div class="ficha-head"><span class="kicker">Perímetro em Vila Mariana</span><h2>Chácara das Jaboticabeiras</h2><button class="icon-btn close" aria-label="Fechar ficha" data-act="pick" data-id="">'+ICON.x+'</button>'+
+      '<div class="tabs" role="tablist">'+tabs.map(function(t){return '<button role="tab" aria-selected="'+(m.tab===t[0])+'" data-act="tab" data-k="'+t[0]+'">'+t[1]+'</button>'}).join("")+'</div></div><div class="ficha-body">';
+    if(m.tab==="geral"){
+      ficha+='<p style="font-size:1.0625rem;margin-top:var(--s2)"><b>'+d.near.length+' HIS possíveis a até 500 m</b>, somando '+d.units+' unidades.</p>'+
+      (d.near.length?'<ul class="near">'+d.near.map(function(p){return '<li><button data-act="pick" data-id="'+p.id+'"><span class="dot" style="background:'+PHASES[p.fase].c+';margin-top:7px"></span><span><b>'+esc(p.nome)+'</b><small>'+esc(p.tipo+" · "+p.fase+" · "+p.un+" un. · "+p.d+" m")+'</small></span></button></li>'}).join("")+'</ul>':'<p style="color:var(--muted)">Nenhuma HIS no raio com os filtros atuais.</p>')+
+      '<button class="btn btn-ghost btn-sm" data-act="toggleRing">'+(m.ring?"Ocultar raio de 500 m":"Mostrar raio de 500 m")+'</button>'+
+      '<p style="margin-top:var(--s4);font-size:.875rem;color:var(--muted)">Posição do perímetro aproximada. As HIS desta camada são fictícias.</p>';
+    }else if(m.tab==="jur"){
+      ficha+='<div class="timeline-mini" style="margin-top:var(--s3)">'+JUR.map(function(j){return '<p><b>'+esc(j.date)+' · '+esc(j.inst.split(",")[0])+'</b><br>'+esc(j.reg)+'. <i>'+esc(j.status)+'.</i></p>'}).join("")+'</div><a class="btn btn-ghost btn-sm" href="#/juridico">Ver todos os registros</a>';
+    }else{
+      ficha+=(envLoaded().length?'<p style="margin-top:var(--s3)">Camadas ambientais no mapa: '+envLoaded().map(function(l){return esc(l.n)}).join(", ")+'.</p><p style="color:var(--muted);font-size:.9375rem">O cruzamento automático com o perímetro ainda não é feito; use as camadas para conferir visualmente.</p>':'<p style="margin-top:var(--s3);color:var(--muted)">Ainda sem dados ambientais para este perímetro: as camadas de risco, contaminação e proteções não têm arquivo.</p>')+'<a class="btn btn-ghost btn-sm" href="#/cobertura">Ver cobertura de dados</a>';
+    }
+    ficha+='</div></section>';
+  }else{
+    var ph=PHASES[cur.fase];
+    ficha='<section class="ficha" aria-label="Ficha da HIS"><div class="ficha-head"><span class="kicker">HIS possível, exemplo</span><h2>'+esc(cur.nome)+'</h2><button class="icon-btn close" aria-label="Fechar ficha" data-act="pick" data-id="">'+ICON.x+'</button>'+
+      '<span class="tag demo" style="margin-top:var(--s2)">Dados fictícios</span></div><div class="ficha-body">'+
+      '<dl class="kv"><dt>Tipo</dt><dd>'+esc(cur.tipo)+'</dd><dt>Fase</dt><dd><span class="dot" style="background:'+ph.c+'"></span> '+esc(cur.fase)+'</dd><dt>Unidades</dt><dd>'+cur.un+'</dd><dt>Agente</dt><dd>'+esc(cur.agente)+'</dd><dt>Da Chácara</dt><dd>'+cur.d+' m</dd></dl>'+
+      '<p style="color:var(--muted);font-size:.9375rem">'+esc(cur.nota)+'</p>'+
+      '<div class="note brick" style="margin-top:var(--s4)">'+ICON.alert+'<div>Viu algo errado aqui, como aluguel por temporada ou preço acima do máximo? Registre os fatos e saia com o texto da denúncia pronto.</div></div>'+
+      '<a class="btn btn-primary" style="width:100%;margin-top:var(--s3);min-height:52px" href="#/denunciar?his='+cur.id+'">Denunciar esta HIS</a>'+
+      '<a class="btn btn-ghost btn-sm" style="width:100%;margin-top:var(--s2)" href="#/guia/sinais">Ver os sinais de alerta</a>'+
+      '</div></section>';
+  }
+  return '<div class="map-page">'+
+    '<div class="filters-col"><button class="filters-toggle" aria-expanded="'+m.filtersOpen+'" aria-controls="filtros" data-act="filters">Filtros e camadas <span aria-hidden="true">'+(m.filtersOpen?"−":"+")+'</span></button>'+f+'</div>'+
+    '<div class="map-col"><div class="map-area'+(closed?'':' has-ficha')+(live?' live':'')+'" role="region" aria-label="'+(live?'Mapa de São Paulo':'Mapa ilustrativo de Vila Mariana')+'">'+(live?'':baseMap())+
+      (!live&&m.ring&&d.inTerr?'<div class="ring" style="left:'+CHACARA.l+'%;top:'+CHACARA.t+'%;width:'+ringPx+'px;height:'+ringPx+'px"><span>500 m</span></div>':'')+
+      (live?'':pins)+
+      (!live&&d.inTerr?'<button class="perim" style="left:'+CHACARA.l+'%;top:'+CHACARA.t+'%" aria-pressed="'+isC+'" data-act="pick" data-id="c"><span class="dot" style="background:var(--clay)"></span>Chácara das Jaboticabeiras</button>':'')+
+      '<div class="map-bar"><div class="terrs" role="group" aria-label="Zonas da cidade">'+TERRS.map(function(t){return '<button class="chip" aria-pressed="'+(m.terr===t)+'" data-act="terr" data-k="'+esc(t)+'">'+esc(t)+'</button>'}).join("")+'</div>'+
+      '<div class="search"><input id="map-q" type="search" aria-label="Buscar HIS por nome, tipo ou fase" placeholder="Buscar por nome, tipo ou fase" value="'+esc(m.q)+'" data-in="mapq"><span>'+d.vis.length+' de '+HIS.length+'</span></div>'+
+      (!mlOn()?'<div class="note" style="max-width:420px;box-shadow:var(--shadow)">'+ICON.info+'<div>Não foi possível carregar o mapa interativo. Mostrando a versão ilustrativa.</div></div>':'')+
+      (!d.inTerr?'<div class="note" style="max-width:420px;box-shadow:var(--shadow)">'+ICON.info+'<div>Esta zona ainda não tem dados no piloto. Só a Zona Sul, em Vila Mariana, tem a camada de demonstração.</div></div>':'')+
+      '</div>'+
+      '<div class="legend"><b>Fase</b> <span style="color:var(--muted)">(pinos fictícios)</span><ul>'+Object.keys(PHASES).map(function(k){return '<li><span class="dot" style="background:'+PHASES[k].c+'"></span>'+PHASES[k].g+' = '+esc(k)+'</li>'}).join("")+'</ul></div>'+
+      (window.innerWidth>900?ficha:'')+
+      (live?'':'<div class="demo-flag">Demonstração: pinos fictícios</div>')+
+    '</div>'+(window.innerWidth<=900?ficha:'')+'</div></div>';
+}
+
+/* ================= DENUNCIAR ================= */
+var STEPS=["O que acontece","Onde","O que você viu","Texto pronto","Próximos passos"];
+function kindOf(){return KINDS.find(function(k){return k.k===S.rep.kind})}
+function strength(){
+  var r=S.rep,n=0;
+  n+=Math.min(r.signs.length,3);
+  n+=Math.min(r.diary.length,2);
+  if(r.link||r.codigo)n+=1;
+  return Math.min(n,6);
+}
+function strengthLabel(n){return n<=1?"Relato inicial":n<=3?"Bom começo":n<=4?"Relato consistente":"Relato forte"}
+function adjFound(t){t=(" "+String(t||"").toLowerCase()+" ");return ADJ.filter(function(a){return new RegExp("[^a-zà-ú]"+a.replace(/[-\s]/g,"[-\\s]")+"[^a-zà-ú]").test(t)})}
+function capCheck(c){
+  var cap=CAPS[c.cat],v=parseMoney(c.val);if(isNaN(v)||!v)return null;
+  var lim=c.mode==="venda"?cap.venda:cap.renda*0.3;
+  return {v:v,lim:lim,over:v>lim};
+}
+function hole(t){return "[[" + t + "]]"}
+function buildText(){
+  var r=S.rep,k=r.kind,ch=r.channel;
+  var place=(r.predio||hole("nome do prédio"))+", "+(r.end||hole("endereço"))+(r.torre?", torre/bloco "+r.torre:"")+(r.unid?", unidade "+r.unid:"");
+  var placa={"vi":"O prédio tem placa informativa de HIS/HMP.","nao-vi":"Não vi placa informativa no prédio.","nao-sei":"Placa informativa: não verificada."}[r.placa];
+  var facts=[];
+  r.diary.forEach(function(e){facts.push((e.when?fmtDT(e.when)+": ":"")+e.what)});
+  r.signs.forEach(function(s){facts.push(s+".")});
+  if(r.link||r.codigo)facts.push("Anúncio: "+[r.link,r.codigo&&("código "+r.codigo)].filter(Boolean).join(", ")+".");
+  var cc=k==="preco"?capCheck(r.cap):null;
+  if(cc&&cc.over)facts.push("Valor pedido de "+brl(cc.v)+", acima do "+(r.cap.mode==="venda"?"preço máximo de venda":"limite de aluguel (30% da renda da faixa)")+" da "+r.cap.cat+" em 2026, de "+brl(cc.lim)+".");
+  if(r.desc.trim())facts.push(r.desc.trim());
+  var factsTxt=facts.length?facts.map(function(f){return "• "+f}).join("\n"):"• "+hole("descreva o que você viu, com data e hora");
+  var basis={
+    temporada:"Com base no Decreto Municipal 64.244/2025, art. 7º, VII, comunico possível uso irregular de unidade(s) de Habitação de Interesse Social (HIS) por locação de curta duração (temporada).",
+    preco:"Comunico possível venda ou locação de unidade(s) de Habitação de Interesse Social (HIS) acima do preço máximo ou do limite de aluguel previstos nos Decretos Municipais 64.244/2025 e 64.895/2026.",
+    renda:"Comunico possível venda ou locação de unidade(s) de Habitação de Interesse Social (HIS) sem verificação da faixa de renda (ateste de renda da SEHAB), conforme o Decreto Municipal 63.130/2024 e o Decreto 64.244/2025.",
+    hotel:"Com base no Decreto Municipal 64.244/2025, comunico possível uso de unidade(s) de Habitação de Interesse Social (HIS) como hotel, hostel ou flat, o que não corresponde à destinação de moradia social.",
+    obra:"Comunico problema causado por obra no endereço abaixo e peço fiscalização."
+  }[k]||hole("escolha o tipo de problema no passo 1");
+  var ask=k==="obra"?"Peço vistoria no local, informação sobre o alvará de execução e o número de protocolo desta manifestação.":"Solicito apuração, informação sobre eventual processo de fiscalização aberto e o número de protocolo desta manifestação.";
+  var sig=r.sigilo?"\nPeço sigilo da minha identidade.":"";
+  var t="";
+  if(ch==="156"){
+    t=basis+"\n\nLocal: "+place+". "+placa+"\n\nFatos observados:\n"+factsTxt+"\n\n"+ask+sig;
+  }else if(ch==="sehab"){
+    t="Assunto: "+(k==="temporada"?"HIS anunciada para temporada":"Possível irregularidade em HIS")+" — "+(r.predio||"prédio")+(r.proto?" — protocolo 156 nº "+r.proto:"")+"\n\nÀ Secretaria Municipal de Habitação (SEHAB),\n\n"+basis+(r.proto?" Registrei o caso no 156 sob o protocolo nº "+r.proto+".":"")+"\n\nLocal: "+place+". "+placa+"\n\nFatos observados:\n"+factsTxt+"\n\nPeço que informem se há processo de fiscalização aberto para este empreendimento e qual o andamento."+sig+"\n\nAtenciosamente,\n"+hole("seu nome ou “morador(a) da região”");
+  }else if(ch==="sindico"){
+    t="Ao síndico e ao conselho do condomínio "+(r.predio||hole("nome do prédio"))+",\n\nVenho registrar por escrito uma situação observada no prédio, que pode contrariar as regras da Habitação de Interesse Social (HIS)"+(k==="temporada"?": o Decreto Municipal 64.244/2025 proíbe a locação por temporada em unidades HIS, e análises jurídicas indicam que decisão de assembleia não afasta essa regra":"")+".\n\nFatos observados:\n"+factsTxt+"\n\nPeço que o condomínio verifique a situação e responda por escrito. Esta comunicação não acusa nenhuma pessoa: trata apenas de fatos.\n\n"+hole("data")+"\n"+hole("assinatura ou unidade");
+  }else{
+    t="Este anúncio parece oferecer uma unidade de Habitação de Interesse Social (HIS) de São Paulo"+(k==="temporada"||k==="hotel"?" para hospedagem de curta duração":"")+". O Decreto Municipal 64.244/2025 proíbe a locação por temporada em HIS, e o anúncio não tem validade legal.\n\nEndereço: "+place+".\n"+(r.link?"Anúncio: "+r.link+"\n":"")+"\nPeço a remoção do anúncio.";
+  }
+  return t;
+}
+function textToHTML(t){return esc(t).replace(/\[\[(.+?)\]\]/g,'<span class="hole">$1</span>')}
+function cleanText(t){return t.replace(/\[\[(.+?)\]\]/g,"[$1]")}
+
+function vSteps(){
+  var r=S.rep;
+  return '<ol class="steps" aria-label="Etapas">'+STEPS.map(function(s,i){var n=i+1,cls=n===r.step?"cur":n<r.step||n<=r.max?"done":"";if(n===r.step)cls="cur";return '<li class="'+cls+'"><button data-act="goStep" data-n="'+n+'" '+(n>r.max?"disabled":"")+' '+(n===r.step?'aria-current="step"':"")+'><span><span class="n">'+n+' de 5 </span><span class="t">'+s+'</span></span></button></li>'}).join("")+'</ol>';
+}
+function canNext(){var r=S.rep;if(r.step===1)return !!r.kind;if(r.step===2)return !!(r.predio.trim()||r.end.trim());return true}
+function vDenunciar(){
+  var r=S.rep,body="",side="";
+  if(r.step===1){
+    body='<h2 class="step-title">O que está acontecendo?</h2><p class="step-lead">Escolha o que mais se parece com o que você viu. Dá para mudar depois.</p>'+
+    '<div class="choices" role="radiogroup" aria-label="Tipo de problema">'+KINDS.map(function(k){return '<label class="choice radio"><input type="radio" name="kind" value="'+k.k+'" '+(r.kind===k.k?"checked":"")+' data-in="kind"><span class="box"></span><span><b>'+k.t+'</b><small>'+k.d+'</small></span></label>'}).join("")+'</div>'+
+    '<div style="margin-top:var(--s5)">'+note("","alert","<b>Antes de começar:</b> apartamento pequeno, caro ou alugado não é prova de irregularidade. Denuncie fatos, nunca pessoas.")+'</div>';
+  }else if(r.step===2){
+    body='<h2 class="step-title">Onde fica?</h2><p class="step-lead">Quanto mais exato o endereço, mais fácil para a fiscalização encontrar o prédio.</p>'+
+    '<div class="field"><span class="lbl">Escolher no mapa (camada de demonstração)</span><div class="seg">'+HIS.map(function(h){return '<button class="chip" aria-pressed="'+(r.hisId===h.id)+'" data-act="pickHis" data-id="'+h.id+'"><span class="dot" style="background:'+PHASES[h.fase].c+'"></span>'+esc(h.nome)+'</button>'}).join("")+'</div><span class="hint">Ou preencha abaixo. Os prédios do mapa são fictícios.</span></div>'+
+    '<div class="grid2"><div class="field"><label for="f-predio">Nome do prédio</label><input class="input" id="f-predio" data-in="predio" value="'+esc(r.predio)+'" autocomplete="off"></div>'+
+    '<div class="field"><label for="f-end">Endereço</label><input class="input" id="f-end" data-in="end" value="'+esc(r.end)+'" placeholder="Rua, número, bairro" autocomplete="off"></div>'+
+    '<div class="field"><label for="f-torre">Torre ou bloco <span style="font-weight:400;color:var(--muted)">(opcional)</span></label><input class="input" id="f-torre" data-in="torre" value="'+esc(r.torre)+'"></div>'+
+    '<div class="field"><label for="f-unid">Unidade <span style="font-weight:400;color:var(--muted)">(se souber)</span></label><input class="input" id="f-unid" data-in="unid" value="'+esc(r.unid)+'"></div></div>'+
+    '<div class="field"><span class="lbl" id="placa-l">O prédio tem placa informativa de HIS/HMP?</span><div class="seg" role="radiogroup" aria-labelledby="placa-l">'+[["vi","Sim, vi a placa"],["nao-vi","Não vi placa"],["nao-sei","Não sei"]].map(function(o){return '<button class="chip" role="radio" aria-checked="'+(r.placa===o[0])+'" aria-pressed="'+(r.placa===o[0])+'" data-act="placa" data-k="'+o[0]+'">'+o[1]+'</button>'}).join("")+'</div><span class="hint">Empreendimentos com HIS e HMP devem ter placa. Se puder, fotografe.</span></div>'+
+    (r.kind==="obra"?'':'<details class="acc" style="border-top:1px solid var(--line);margin-top:var(--s4)"><summary style="font-size:1rem">Como conferir se o prédio é HIS</summary><div class="body"><ol style="padding-left:1.2em"><li>Olhe a placa informativa e fotografe.</li><li>Peça a certidão de matrícula no Cartório de Registro de Imóveis (há taxa) e procure a anotação dos 10 anos.</li><li>Pergunte à SEHAB a categoria das unidades e se há fiscalização aberta.</li><li>Fale com o Conselho Gestor da ZEIS, se o prédio estiver em uma.</li></ol></div></details>');
+  }else if(r.step===3){
+    var signs=SIGNS[r.kind]||SIGNS.temporada,adj=adjFound(r.desc+" "+r.diary.map(function(e){return e.what}).join(" "));
+    body='<h2 class="step-title">O que você viu?</h2><p class="step-lead">Marque os sinais e anote os fatos com data e hora. Um sinal sozinho não é prova; vários sinais no mesmo prédio fortalecem o caso.</p>'+
+    '<div class="field"><span class="lbl">Sinais que você observou</span><div class="choices">'+signs.map(function(s,i){return '<label class="choice"><input type="checkbox" value="'+esc(s)+'" '+(r.signs.indexOf(s)>-1?"checked":"")+' data-in="sign"><span class="box"></span><span>'+esc(s)+'</span></label>'}).join("")+'</div></div>'+
+    (r.kind==="preco"?'<div class="inline-check" id="capbox">'+capWidget(r.cap,"rep")+'</div>':'')+
+    '<div class="field" style="margin-top:var(--s5)"><span class="lbl">Diário: o que aconteceu, quando</span><span class="hint">Uma linha por fato. Exemplo: “3 pessoas com malas entraram às 14h”.</span>'+
+    (r.diary.length?'<ul class="diary">'+r.diary.map(function(e,i){return '<li><time>'+esc(fmtDT(e.when)||"sem data")+'</time><span>'+esc(e.what)+'</span><button data-act="delDiary" data-i="'+i+'" aria-label="Remover fato '+(i+1)+'">Remover</button></li>'}).join("")+'</ul>':'')+
+    '<div class="diary-add"><div><label class="sr" for="d-when">Data e hora</label><input class="input" type="datetime-local" id="d-when"></div><div><label class="sr" for="d-what">O que aconteceu</label><input class="input" id="d-what" placeholder="O que aconteceu, sem adjetivos"></div><button class="btn btn-dark" data-act="addDiary">Adicionar</button></div></div>'+
+    (r.kind!=="obra"?'<div class="grid2"><div class="field"><label for="f-link">Link do anúncio</label><input class="input" id="f-link" data-in="link" value="'+esc(r.link)+'" placeholder="airbnb.com/rooms/…" inputmode="url"></div><div class="field"><label for="f-cod">Código do anúncio</label><input class="input" id="f-cod" data-in="codigo" value="'+esc(r.codigo)+'"></div></div>':'')+
+    '<div class="field"><label for="f-desc">Mais algum detalhe? <span style="font-weight:400;color:var(--muted)">(opcional)</span></label><textarea class="input" id="f-desc" data-in="desc" placeholder="Só fatos: o que, quando, onde.">'+esc(r.desc)+'</textarea>'+
+    '<div id="adjwarn" class="warn-adj">'+(adj.length?note("brick","alert","Troque <b>“"+esc(adj.join("”, “"))+"”</b> pela descrição do fato. Adjetivos e acusações enfraquecem a denúncia e podem expor você."):"")+'</div></div>'+
+    note("","lock","Não entre em apartamentos, não faça reserva falsa e não poste rostos. Ao anexar fotos no 156, cubra rostos e placas de carro.");
+  }else if(r.step===4){
+    var txt=r.edited?r.text:buildText();
+    body='<h2 class="step-title">Seu texto está pronto</h2><p class="step-lead">Escolha para onde vai mandar. O texto muda de formato; os fatos são os mesmos. Os trechos destacados ainda precisam ser preenchidos.</p>'+
+    '<div class="channel-tabs" role="tablist" aria-label="Canal">'+CHANNELS.filter(function(c){return !(r.kind==="obra"&&(c.k==="plataforma"||c.k==="sindico"))}).map(function(c){return '<button class="chip" role="tab" aria-selected="'+(r.channel===c.k)+'" aria-pressed="'+(r.channel===c.k)+'" data-act="channel" data-k="'+c.k+'">'+c.t+'</button>'}).join("")+'</div>'+
+    '<label class="toggle"><input type="checkbox" data-act="sigilo" '+(r.sigilo?"checked":"")+'><span>Pedir sigilo da minha identidade<small>Recomendado. A denúncia identificada é mais fácil de apurar, mas você pode pedir sigilo.</small></span></label>'+
+    '<div class="slip" style="margin-top:var(--s4)"><div class="slip-head"><h2>'+esc((CHANNELS.find(function(c){return c.k===r.channel})||{}).t)+'</h2>'+(r.edited?'<button class="btn btn-ghost btn-sm" data-act="regen">Refazer com as respostas</button>':'<span class="tag">Você pode editar</span>')+'</div>'+
+    '<label class="sr" for="slip-ta">Texto da denúncia</label><textarea id="slip-ta" data-in="slip" spellcheck="true">'+esc(cleanText(txt))+'</textarea></div>'+
+    '<div class="slip-actions"><button class="btn btn-dark" data-act="copy">Copiar texto</button><button class="btn btn-ghost" data-act="download">Baixar .txt</button>'+
+    (r.channel==="156"?'<a class="btn btn-primary" href="https://sp156.prefeitura.sp.gov.br/portal" target="_blank" rel="noopener">Abrir o 156</a>':'')+'</div>'+
+    '<p class="privacy">'+ICON.lock+'<span>Tudo roda no seu navegador: nada é enviado nem guardado. O site não faz a denúncia; quem registra é você.</span></p>'+
+    (r.channel==="156"?note("green","info","No 156, se não achar o serviço certo, use o campo livre e escreva “HIS” e “Decreto 64.244/2025”. Ligue 156 se preferir. <b>Anote o número de protocolo.</b>"):"");
+  }else{
+    body='<h2 class="step-title">E agora?</h2><p class="step-lead">Processos levam tempo e nem toda denúncia vira multa na hora, mas cada registro ajuda a Prefeitura a decidir onde agir primeiro. Marque o que já fez.</p>'+
+    '<div class="grid2"><div class="field"><label for="f-proto">Número do protocolo</label><input class="input" id="f-proto" data-in="proto" value="'+esc(r.proto)+'" inputmode="numeric"></div><div class="field"><label for="f-pdate">Data do registro</label><input class="input" type="date" id="f-pdate" data-in="protoDate" value="'+esc(r.protoDate)+'"></div></div>'+
+    '<ol class="next">'+nextSteps().map(function(n,i){var ok=!!r.done[i];return '<li class="'+(ok?"ok":"")+'"><div><h3>'+n.t+'</h3><p>'+n.d+'</p>'+(n.a||"")+'<label class="check-line" style="margin-top:8px"><input type="checkbox" data-act="done" data-i="'+i+'" '+(ok?"checked":"")+'> Feito</label></div></li>'}).join("")+'</ol>'+
+    '<div class="panel" style="margin-top:var(--s5)"><h3 style="font-size:1.25rem;margin-bottom:6px">Pedido de informação em grupo (Lei de Acesso)</h3><p style="color:var(--muted);font-size:.9375rem">Qualquer pessoa ou associação pode pedir dados à Prefeitura sem justificar, pelo SIC no portal do 156. O prazo é de 20 dias, prorrogável por mais 10.'+(true?' Se pedir hoje, a resposta vence em <b>'+fmtD(new Date(Date.now()+20*864e5))+'</b> (até '+fmtD(new Date(Date.now()+30*864e5))+' com prorrogação).':'')+'</p><button class="btn btn-ghost btn-sm" data-act="copyLAI">Copiar modelo de pedido</button></div>'+
+    '<div style="margin-top:var(--s4)">'+note("brick","alert","<b>Se sentir ameaçado:</b> ligue 190, registre boletim de ocorrência e procure o Ministério Público ou a Defensoria Pública. Ninguém pode punir denúncia de boa-fé.")+'</div>'+
+    '<div class="nav-row" style="border:0"><button class="btn btn-ghost" data-act="newReport">Começar outra denúncia</button></div>';
+  }
+  // side panel
+  if(r.step<=3){
+    var n=strength();
+    side='<div class="slip-col"><div class="meter" aria-live="polite"><small>Força do relato</small><b>'+strengthLabel(n)+'</b><div class="meter-bar" aria-hidden="true">'+[0,1,2,3,4,5].map(function(i){return '<i class="'+(i<n?"on":"")+'"></i>'}).join("")+'</div><small>Some sinais, fatos com data e o link do anúncio.</small></div>'+
+      '<div class="slip"><div class="slip-head"><h2>Prévia do texto</h2><span class="tag demo">Atualiza enquanto você responde</span></div><div class="slip-body" id="preview">'+textToHTML(buildText())+'</div></div></div>';
+  }else if(r.step===4){
+    side='<div class="slip-col"><div class="panel"><h3 style="font-size:1.25rem;margin-bottom:var(--s3)">Antes de enviar</h3><ul style="padding-left:1.2em;margin:0;font-size:.9375rem"><li>Preencha os trechos entre colchetes.</li><li>Releia: só fatos, sem nomes de moradores ou hóspedes.</li><li>Junte prints do anúncio inteiro (título, fotos, preço) e fotos da fachada e da placa.</li><li>Guarde duas cópias: no celular e na nuvem.</li></ul></div>'+
+      '<div class="panel" style="margin-top:var(--s3)"><h3 style="font-size:1.125rem;margin-bottom:6px">Em que ordem mandar</h3><p style="font-size:.9375rem;color:var(--muted);margin:0">Síndico por escrito, depois 156. Com o protocolo em mãos, reforce por e-mail à SEHAB. Se for temporada, denuncie também na plataforma.</p></div></div>';
+  }else{
+    side='<div class="slip-col"><div class="panel"><h3 style="font-size:1.25rem;margin-bottom:var(--s3)">Canais</h3>'+channelList(true)+'</div></div>';
+  }
+  var nav=r.step<5?'<div class="nav-row">'+(r.step>1?'<button class="btn btn-ghost" data-act="prev">Voltar</button>':'<span></span>')+'<button class="btn btn-primary" data-act="next" '+(canNext()?"":"disabled")+'>'+(r.step===4?"Já enviei, e agora?":"Continuar")+'</button></div>'+(!canNext()?'<p style="text-align:right;font-size:.875rem;color:var(--muted);margin-top:6px">'+(r.step===1?"Escolha uma opção para continuar.":"Informe o nome do prédio ou o endereço.")+'</p>':''):'';
+  return '<div class="wrap"><div class="page-head" style="margin-bottom:var(--s5)"><span class="kicker">Denunciar HIS irregular'+(r.kind?" · "+kindOf().t.toLowerCase():"")+'</span></div>'+vSteps()+
+    '<div class="report"><section aria-live="off">'+body+nav+'</section><aside aria-label="Resumo">'+side+'</aside></div></div>';
+}
+function nextSteps(){
+  var obra=S.rep.kind==="obra";
+  if(obra)return [
+    {t:"Registre no 156",d:"Barulho: Programa Silêncio Urbano (Psiu). Informe endereço, horário e tipo de atividade; a fiscalização costuma ir no horário que você informar.",a:'<a href="https://sp156.prefeitura.sp.gov.br/portal" target="_blank" rel="noopener">sp156.prefeitura.sp.gov.br</a>'},
+    {t:"Calçada, entulho ou rua interditada",d:"156 ou a subprefeitura da região. Trânsito parado por caminhão: 156 e CET; pergunte se a interdição foi autorizada."},
+    {t:"Pergunte pelo alvará",d:"Peça à subprefeitura, pelo 156, se existe alvará de execução da obra."},
+    {t:"Combine com os vizinhos",d:"Vários registros do mesmo endereço mostram que o problema é coletivo."},
+    {t:"Nada resolveu?",d:"Use o protocolo, procure a Ouvidoria, leve à associação de moradores e, se for grave, ao Ministério Público."}
+  ];
+  return [
+    {t:"Avise o síndico por escrito",d:"Cria um registro e pode resolver rápido. Use a versão “Síndico” do texto."},
+    {t:"Registre no 156 e anote o protocolo",d:"Descreva os fatos e anexe os arquivos. Se for temporada, cite o Decreto 64.244/2025.",a:'<a href="https://sp156.prefeitura.sp.gov.br/portal" target="_blank" rel="noopener">sp156.prefeitura.sp.gov.br</a>'},
+    {t:"Reforce com a SEHAB",d:"Mande e-mail ou ofício com o protocolo e peça que informem se abriram processo. Rua São Bento, 405, Centro · (11) 3322-4500."},
+    {t:"Denuncie o anúncio na plataforma",d:"Airbnb, Booking, QuintoAndar: use o botão de denunciar e diga que é HIS ou HMP."},
+    {t:"Acompanhe e cobre",d:"Use o protocolo para pedir andamento. Passou o prazo? Procure a Ouvidoria e peça sigilo.",a:'<a href="https://www.prefeitura.sp.gov.br/web/ouvidoria" target="_blank" rel="noopener">Ouvidoria da Prefeitura</a>'},
+    {t:"Escale se for preciso",d:"Sem resposta, ou em caso grave: Ministério Público, Defensoria Pública e Conselho Gestor da ZEIS.",a:'<a href="https://www.mpsp.mp.br" target="_blank" rel="noopener">mpsp.mp.br</a> · <a href="https://www.defensoria.sp.def.br" target="_blank" rel="noopener">defensoria.sp.def.br</a>'}
+  ];
+}
+function afterReport(){
+  var ta=$("#slip-ta");if(ta&&!S.rep.edited){S.rep.text=ta.value}
+}
+function refreshPreview(){
+  var p=$("#preview");if(p)p.innerHTML=textToHTML(buildText());
+  var m=$(".meter");if(m){var n=strength();m.querySelector("b").textContent=strengthLabel(n);m.querySelectorAll(".meter-bar i").forEach(function(el,i){el.classList.toggle("on",i<n)})}
+  var nb=$('[data-act="next"]');if(nb)nb.disabled=!canNext();
+  var w=$("#adjwarn");if(w){var adj=adjFound(S.rep.desc+" "+S.rep.diary.map(function(e){return e.what}).join(" "));w.innerHTML=adj.length?note("brick","alert","Troque <b>“"+esc(adj.join("”, “"))+"”</b> pela descrição do fato. Adjetivos e acusações enfraquecem a denúncia e podem expor você."):""}
+}
+var LAI_TXT="Com base na Lei 12.527/2011, solicito à Secretaria Municipal de Habitação, para a região de [subprefeitura ou bairro]: (1) a lista de empreendimentos com unidades HIS e HMP, com a categoria de cada um; (2) o número de processos de fiscalização abertos e de sanções aplicadas por empreendimento desde 2024; (3) quantas Certidões de Ateste de renda foram emitidas nesses empreendimentos; (4) quantas denúncias de locação por temporada foram recebidas e qual o andamento delas. Peço a resposta em planilha.";
+
+/* ================= shared widgets ================= */
+function capWidget(c,scope){
+  var cap=CAPS[c.cat],cc=capCheck(c);
+  return '<h3 style="font-size:1.25rem;margin-bottom:var(--s3)">O preço está acima do teto?</h3>'+
+  '<div class="field"><span class="lbl">Categoria da unidade</span><div class="seg">'+Object.keys(CAPS).map(function(k){return '<button class="chip" aria-pressed="'+(c.cat===k)+'" data-act="capcat" data-scope="'+scope+'" data-k="'+k+'">'+k+'</button>'}).join("")+'</div></div>'+
+  '<div class="field"><span class="lbl">É venda ou aluguel?</span><div class="seg">'+[["venda","Venda"],["aluguel","Aluguel mensal"]].map(function(o){return '<button class="chip" aria-pressed="'+(c.mode===o[0])+'" data-act="capmode" data-scope="'+scope+'" data-k="'+o[0]+'">'+o[1]+'</button>'}).join("")+'</div></div>'+
+  '<div class="field"><label for="cap-'+scope+'">Valor pedido (R$)</label><input class="input" id="cap-'+scope+'" inputmode="decimal" data-in="capval" data-scope="'+scope+'" value="'+esc(c.val)+'" placeholder="'+(c.mode==="venda"?"300.000":"2.000")+'"></div>'+
+  '<p style="font-size:.9375rem;color:var(--muted);margin:0">Teto em 2026 para '+c.cat+': <b style="color:var(--ink)">'+(c.mode==="venda"?brl(cap.venda)+" na venda":brl(cap.renda*0.3)+" de aluguel por mês (30% de "+brl(cap.renda)+")")+'</b>.</p>'+
+  '<div class="cap-out" id="capout-'+scope+'">'+capVerdict(cc)+'</div>';
+}
+function capVerdict(cc){
+  if(!cc)return "";
+  return cc.over?'<div class="verdict bad">'+brl(cc.v)+' passa o teto em '+brl(cc.v-cc.lim)+'. Isso é um fato que vale denunciar.</div>':'<div class="verdict good">'+brl(cc.v)+' está dentro do teto. Cobrança “por fora” para completar o valor também é irregular.</div>';
+}
+function channelList(compact){
+  var C=[
+    ["SP156 (Prefeitura)","Ligue 156 ou registre pelo portal. Anote o protocolo.","https://sp156.prefeitura.sp.gov.br/portal","sp156.prefeitura.sp.gov.br"],
+    ["SEHAB","Fiscaliza o enquadramento, emite o ateste e aplica sanções. Rua São Bento, 405, Centro · (11) 3322-4500.","",""],
+    ["Ouvidoria da Prefeitura","Quando o 156 não resolve ou demora. Peça sigilo.","https://www.prefeitura.sp.gov.br/web/ouvidoria","prefeitura.sp.gov.br/web/ouvidoria"],
+    ["Ministério Público (SP)","Casos graves ou quando o poder público não age. Sem advogado.","https://www.mpsp.mp.br","mpsp.mp.br"],
+    ["Defensoria Pública (SP)","Orientação jurídica gratuita: contrato, aluguel, despejo.","https://www.defensoria.sp.def.br","defensoria.sp.def.br"],
+    ["Conselho Gestor da ZEIS","Leva o caso como pauta coletiva e cobra resposta da SEHAB por escrito.","",""]
+  ];
+  if(compact)return '<ul style="list-style:none;padding:0;margin:0">'+C.map(function(c){return '<li style="padding:10px 0;border-bottom:1px solid var(--line-soft)"><b>'+c[0]+'</b><br><span style="font-size:.875rem;color:var(--muted)">'+c[1]+'</span>'+(c[2]?'<br><a style="font-size:.875rem;font-weight:700" href="'+c[2]+'" target="_blank" rel="noopener">'+c[3]+'</a>':'')+'</li>'}).join("")+'</ul>';
+  return '<div class="channels">'+C.map(function(c){return '<div class="channel"><h3>'+c[0]+'</h3><p>'+c[1]+'</p>'+(c[2]?'<a href="'+c[2]+'" target="_blank" rel="noopener">'+c[3]+'</a>':'')+'</div>'}).join("")+'</div>';
+}
+
+/* ================= GUIA ================= */
+var GLOSS=[["Ágio","Valor cobrado a mais, “por fora”, além do preço do contrato."],["Assembleia de condomínio","Reunião dos moradores para decidir assuntos do prédio."],["Ateste de renda","Documento da SEHAB que confirma que a família se encaixa na faixa de renda."],["Averbação","Anotação feita na matrícula do imóvel. Aqui, a de que a unidade é HIS por 10 anos."],["Certidão de matrícula","Cópia atualizada da matrícula, pedida no cartório (há taxa)."],["Cessão (taxa de cessão)","Repasse de um direito sobre o imóvel a outra pessoa. Cobrar “taxa” por isso é sinal de alerta."],["Conselho Gestor de ZEIS","Grupo de moradores e representantes da Prefeitura que acompanha a ZEIS."],["Controle social","Acompanhamento do que o poder público faz, feito pela própria população."],["CPI","Comissão Parlamentar de Inquérito: grupo de vereadores que investiga um assunto."],["Defensoria Pública","Órgão que dá orientação jurídica gratuita a quem não pode pagar advogado."],["Faixa de renda","Limite de renda da família para cada categoria (HIS-1, HIS-2 e HMP)."],["HIS-1 e HIS-2","Habitação de Interesse Social para famílias de até 3 e até 6 salários mínimos."],["HMP","Habitação de Mercado Popular, para renda mais alta (até 10 salários mínimos)."],["INCC","Índice do custo da construção, usado para corrigir o preço máximo a cada ano."],["Incentivo","Vantagem dada pela Prefeitura à construtora, como não pagar para construir mais."],["Incorporadora","Empresa que organiza a obra e vende os apartamentos."],["Matrícula","Documento do cartório com a história do imóvel: o “RG” dele."],["Ministério Público","Defende o interesse da sociedade. Recebe denúncias, inclusive quando a Prefeitura não age."],["Ofício","Carta ou e-mail formal enviado a um órgão público."],["Outorga onerosa","Valor que a construtora paga para construir acima do limite básico. Na HIS, ela não paga."],["Ouvidoria","Canal para reclamar quando um serviço público demora ou não responde."],["Plano Diretor","Lei que define como a cidade pode crescer. É nela que a HIS está prevista."],["Sanção","Punição prevista em lei: multa, devolução de valores ou perda dos incentivos."],["SEHAB","Secretaria Municipal de Habitação da Prefeitura de São Paulo."],["SIC","Serviço de Informação ao Cidadão, canal para pedir informações à Prefeitura."],["Subprefeitura","Parte da Prefeitura que cuida de uma região da cidade."],["Temporada","Aluguel de curta duração, em geral por diárias, por aplicativos como Airbnb."],["ZEIS","Zona Especial de Interesse Social: área reservada à moradia de baixa renda."]];
+var QUIZ=[
+  {q:"Alugar uma HIS por 6 meses, com contrato residencial, é proibido?",a:false,e:"Não é proibido. A proibição é para temporada e contratos de menos de 90 dias. O aluguel precisa respeitar o limite de 30% da renda da faixa."},
+  {q:"A assembleia do condomínio liberou a temporada. Então pode?",a:false,e:"Não. A proibição vale mesmo assim: análises jurídicas indicam que a assembleia não afasta a regra."},
+  {q:"O apartamento é pequeno e caro. Isso já é irregular?",a:false,e:"Não necessariamente. Confirme os fatos antes de acusar: renda, preço, destinação por 10 anos e temporada."},
+  {q:"Anunciar uma HIS no Airbnb por diária é irregular?",a:true,e:"Sim. O Decreto 64.244/2025 diz que aluguel de curta duração não conta como moradia social."},
+  {q:"Cobrar uma “taxa de cessão” por fora para fechar a venda é irregular?",a:true,e:"Sim. Cobrar por fora para passar o preço do teto também é irregular."},
+  {q:"Quem mora numa HIS pode ser punido por denunciar?",a:false,e:"Não. Ninguém pode punir denúncia de boa-fé. As sanções recaem sobre quem descumpre, não sobre quem denuncia."}
+];
+function vGuia(){
+  var g=S.guide,gq=g.gq.trim().toLowerCase();
+  var gl=GLOSS.filter(function(x){return !gq||(x[0]+" "+x[1]).toLowerCase().indexOf(gq)>-1});
+  var c1=CAPS["HIS-1"],c2=CAPS["HIS-2"],c3=CAPS.HMP;
+  var PARTS=[
+    {n:1,id:"parte-1",t:"O que são as HIS, seus direitos e como denunciar",d:"O que é HIS, o que pode e o que não pode, sinais de alerta e como denunciar.",p:"p. 3",topics:[
+      ["o-que-e","O que é HIS?","p. 4",'<p>HIS quer dizer Habitação de Interesse Social: moradia pensada para famílias de menor renda. A cidade dá vantagens às construtoras: elas não pagam para construir mais e podem fazer prédios maiores. Em troca, as unidades têm que ficar para famílias da faixa de renda certa, com preço controlado.</p><p><b>Pense assim:</b> é um desconto com condição. Se a condição não é cumprida, o desconto não vale.</p><p>HMP (Habitação de Mercado Popular) é outra categoria, para renda mais alta, com regras parecidas. ZEIS é a área da cidade reservada para moradia de baixa renda.</p>'],
+      ["pode","O que pode e o que não pode","p. 5",'<div class="dodont"><div class="yes"><h4>Pode</h4><ul><li>Morar na unidade, com renda dentro da faixa</li><li>Alugar por contrato residencial de longa duração, com aluguel de até 30% da renda da faixa</li><li>Vender depois, respeitando o preço máximo e os 10 anos de proteção</li></ul></div><div class="no"><h4>Não pode</h4><ul><li>Anunciar ou alugar por temporada (Airbnb, Booking e similares)</li><li>Vender acima do preço máximo</li><li>Vender ou alugar para quem não comprova a renda</li><li>Usar a unidade como hotel, hostel ou flat</li></ul></div></div><p style="margin-top:var(--s3)">A temporada é proibida pelo Decreto 64.244/2025. As sanções recaem sobre quem descumpre, não sobre quem denuncia.</p>'],
+      ["sinais","Sinais de alerta","p. 6",'<p>Um sinal de alerta não é prova: mostra que vale observar com mais cuidado. Quanto mais sinais no mesmo prédio, mais forte é o caso.</p><ol><li>Novas pessoas a cada poucos dias com bagagens.</li><li>Cofres de chave na portaria ou senha de fechadura trocada a cada estadia.</li><li>Anúncio online com fotos do prédio, preço por diária e avaliações de hóspedes.</li><li>Várias unidades do mesmo prédio anunciadas pelo mesmo perfil ou empresa.</li><li>Venda sem dizer a categoria da unidade, com preço acima do máximo ou com pressa.</li></ol>'+note("","alert","<b>Cuidado:</b> apartamento pequeno, caro ou alugado não é prova de irregularidade. Denuncie fatos, nunca pessoas.")],
+      ["denunciar","Como denunciar em 3 passos","p. 7",'<ol><li><b>Anote os fatos.</b> Endereço, data, horário e o que você viu. Se for anúncio, guarde o print da página inteira e o link. Fotografe sem mostrar o rosto de ninguém.</li><li><b>Registre no 156.</b> Descreva os fatos, anexe os arquivos e cite “HIS” e o Decreto 64.244/2025, se for temporada. Anote o número do protocolo.</li><li><b>Cobre com o protocolo.</b> Use o número para pedir andamento à SEHAB e à Ouvidoria. Sem resposta, ou em caso grave: Ministério Público, Defensoria e Conselho Gestor da ZEIS.</li></ol>'+note("brick","alert","<b>Nunca:</b> entrar em apartamento, fazer reserva falsa ou postar nome ou foto de alguém. Se sentir ameaçado, ligue 190 e registre boletim de ocorrência.")+'<a class="btn btn-primary" style="margin-top:var(--s4)" href="#/denunciar">Montar minha denúncia agora</a>'],
+      ["canais","Onde denunciar","p. 8",channelList(false)+'<p style="margin-top:var(--s3);font-size:.9375rem;color:var(--muted)">Telefones, endereços e formulários podem mudar. Confirme nos sites oficiais. Em risco imediato, ligue 190.</p>'],
+      ["direitos","Seus direitos","p. 9",'<ul><li>Pedir providências a qualquer órgão público, de graça e sem advogado.</li><li>Pedir informações à Prefeitura, sem explicar o motivo. O órgão tem 20 dias para responder (Lei de Acesso à Informação).</li><li>Receber protocolo e resposta, e cobrar a Ouvidoria se demorar.</li><li>Pedir sigilo da sua identidade ao registrar no 156 ou na Ouvidoria.</li><li>Denunciar de boa-fé sem ser punido. Se houver ameaça, faça B.O. e procure o Ministério Público ou a Defensoria.</li></ul><p><b>Quem denuncia não precisa provar tudo.</b> Apurar é trabalho do poder público. Você apresenta indícios claros: um endereço, um anúncio, uma descrição dos fatos.</p>']
+    ],tool:'<h3 class="tool-title">Isso é irregular?</h3><p class="section-lead">Responda e veja na hora.</p><div class="quiz">'+QUIZ.map(function(q,i){var a=g.quiz[i];return '<div class="q"><p>'+q.q+'</p><div class="seg">'+[["s","Sim",true],["n","Não",false]].map(function(o){return '<button class="chip" aria-pressed="'+(a===o[2])+'" data-act="quiz" data-i="'+i+'" data-v="'+o[0]+'">'+o[1]+'</button>'}).join("")+'</div>'+(a!==undefined?'<div class="ans '+(a===q.a?"right":"wrong")+'" role="status"><b>'+(a===q.a?"Isso mesmo. ":"Na verdade, não. ")+'</b>'+q.e+'</div>':'')+'</div>'}).join("")+'</div>'},
+    {n:2,id:"parte-2",t:"Compra e venda de HIS",d:"Quem pode comprar ou morar, as quatro travas, preço máximo e o que fazer se uma incorporadora procurar você.",p:"p. 10",topics:[
+      ["renda","Quem pode comprar ou morar?","p. 11",'<p>Depende da renda mensal de toda a família:</p><div class="table-wrap"><table><tr><th>Categoria</th><th>Renda da família por mês</th><th>Renda por pessoa</th></tr>'+Object.keys(CAPS).map(function(k){var c=CAPS[k];return '<tr><td><b>'+k+'</b></td><td>até '+brl(c.renda).replace(",00","")+' ('+c.sm+' salários mínimos)</td><td>até '+brl(c.pc)+'</td></tr>'}).join("")+'</table></div><p style="margin-top:var(--s3);font-size:.9375rem;color:var(--muted)">Valores de janeiro de 2026. Eles mudam todo ano: confirme na SEHAB. Quem não tem renda própria pode se enquadrar se fizer parte de uma família que sustenta essa pessoa.</p>'],
+      ["travas","As 4 travas que protegem a moradia social","p. 12",'<ol><li><b>Ateste de renda.</b> Documento da SEHAB que confirma que a família se encaixa na faixa. Precisa existir antes de assinar o contrato.</li><li><b>Proteção de 10 anos.</b> O cartório anota na matrícula do imóvel que a unidade é HIS por 10 anos. A Prefeitura é avisada de qualquer negócio.</li><li><b>Preço máximo de venda.</b> Cada categoria tem um teto, corrigido todo ano.</li><li><b>Aluguel limitado.</b> No máximo 30% da renda da faixa da unidade, e só em contrato residencial de longa duração.</li></ol>'],
+      ["teto","Preço máximo, aluguel e fila","p. 13",'<div class="table-wrap"><table><tr><th>Preço máximo de venda em 2026</th><th></th></tr><tr><td><b>HIS-1</b></td><td>'+brl(c1.venda)+'</td></tr><tr><td><b>HIS-2</b></td><td>'+brl(c2.venda)+'</td></tr><tr><td><b>HMP</b></td><td>'+brl(c3.venda)+'</td></tr></table></div><p style="margin-top:var(--s3)">Cobrar um valor “por fora” para passar o preço do teto também é irregular.</p><p><b>Aluguel:</b> na HIS-1, a renda máxima é R$ 4.863, e 30% disso dá cerca de R$ 1.459. Contrato residencial de longa duração é permitido; temporada e contratos de menos de 90 dias, não.</p><p><b>Atenção às famílias na fila:</b> antes de vender uma HIS-1, a empresa deve avisar a SEHAB, que tem 30 dias para indicar famílias inscritas nos programas públicos. Venda sem esse aviso merece pergunta.</p>'],
+      ["assinar","Vai comprar ou alugar uma HIS?","p. 14",'<ul class="checks"><li>Exija o Ateste de renda antes de assinar qualquer contrato.</li><li>Confira se o preço está dentro do teto da categoria.</li><li>Peça a certidão de matrícula e veja a anotação dos 10 anos.</li><li>Desconfie de “taxa de cessão” ou de pagamento por fora.</li><li>Se for alugar, o contrato deve ser residencial, de longa duração, com aluguel de até 30%.</li><li>Guarde contrato, propaganda e conversas com o corretor.</li></ul><p>Dúvida sobre contrato ou ameaça de despejo? Procure a Defensoria Pública.</p>'],
+      ["incorporadora","Se uma incorporadora procurar você","p. 15",'<p>Incorporadoras e corretores podem procurar moradores para comprar casas e terrenos. Vender é uma escolha sua, e ninguém é obrigado a vender. A pressão costuma ser maior sobre pessoas idosas e sobre quem mora sozinho.</p><h4 style="font-size:1.0625rem;margin-bottom:6px">Sinais de pressão</h4><ul><li>Visitas, ligações e recados muito frequentes.</li><li>Frases como “todos os vizinhos já venderam”.</li><li>Pressa para assinar.</li><li>Pedido para não contar nada aos vizinhos.</li><li>Proposta de trocar a casa por apartamentos “no prédio que vai ser construído”, sem garantias claras.</li></ul>'],
+      ["proposta","Se a proposta chegar: o que fazer","p. 16",'<ol><li>Não decida nem assine nada na hora. Peça um tempo para pensar.</li><li>Peça a proposta por escrito: valor, prazos, forma de pagamento, nome da empresa e CNPJ.</li><li>Mostre os papéis a um advogado de confiança ou à Defensoria Pública antes de assinar qualquer coisa.</li><li>Cuidado com o “compromisso de venda” e com o pedido de sigilo. Podem criar obrigações para você e impedir que os vizinhos comparem valores.</li><li>Na permuta, exija contrato claro, com prazo de entrega, tamanho e localização das unidades e garantias.</li><li>Anote tudo e converse com a associação de moradores.</li></ol>'+note("brick","alert","Se houver assédio, ameaça ou mentira, registre um boletim de ocorrência e procure a Defensoria Pública ou o Ministério Público. Pessoas idosas têm proteção especial no Estatuto da Pessoa Idosa (Lei 10.741/2003).")]
+    ],tool:'<h3 class="tool-title">Calculadora de teto</h3><p class="section-lead">Viu um anúncio de venda ou aluguel de HIS? Compare com o limite da categoria.</p><div class="calc"><div class="panel">'+capWidget(g.calc,"guia")+'</div><div class="panel" style="background:var(--ink);color:#fff;border-color:var(--ink)"><p style="color:var(--header-muted);margin-bottom:var(--s2)">Limites de 2026</p>'+Object.keys(CAPS).map(function(k){var c=CAPS[k];return '<div style="display:flex;justify-content:space-between;gap:var(--s3);padding:var(--s3) 0;border-bottom:1px solid #4a3e37"><b style="font-family:var(--display);font-size:1.25rem">'+k+'</b><span style="text-align:right">'+brl(c.venda)+' venda<br><span style="color:var(--header-muted)">'+brl(c.renda*0.3)+' aluguel/mês</span></span></div>'}).join("")+'<p style="color:var(--header-muted);font-size:.875rem;margin:var(--s3) 0 0">Preços atualizados em 05/01/2026 pelo INCC. Confirme na SEHAB antes de agir.</p></div></div>'},
+    {n:3,id:"parte-3",t:"Organização do bairro",d:"Obras, pedido de informações à Prefeitura em grupo e o exemplo de moradores que já se organizaram.",p:"p. 17",topics:[
+      ["obras","Obras: barulho, calçada e trânsito","p. 18",'<p>Obra grande muda o dia a dia de quem mora perto. Você pode registrar e cobrar.</p><div class="dodont"><div class="neutral"><h4>Como registrar</h4><ul><li>Anote o endereço da obra, a data, o horário e o que aconteceu.</li><li>Fotografe a calçada, a rua e a placa da obra, sem mostrar o rosto de ninguém.</li><li>No barulho, anote o horário exato e por quanto tempo durou.</li><li>Combine com os vizinhos: vários registros do mesmo endereço mostram que o problema é coletivo.</li></ul></div><div class="neutral"><h4>Onde reclamar</h4><ul><li><b>Barulho:</b> 156 (Programa Silêncio Urbano, o Psiu).</li><li><b>Calçada bloqueada, rua interditada, entulho e lama:</b> 156 ou a subprefeitura.</li><li><b>Trânsito parado por caminhão ou concretagem:</b> 156 e CET.</li><li><b>Dúvida se a obra tem licença:</b> pergunte à subprefeitura, pelo 156, se existe alvará de execução.</li><li><b>Nada resolveu?</b> Use o protocolo, procure a Ouvidoria, a associação de moradores e, se for grave, o Ministério Público.</li></ul></div></div><a class="btn btn-ghost" style="margin-top:var(--s4)" href="#/denunciar" data-act="startObra">Registrar problema com obra</a>'],
+      ["lai","Peça informações à Prefeitura, em grupo","p. 19",'<p>Pela Lei de Acesso à Informação (Lei 12.527/2011), qualquer pessoa, associação ou conselho pode pedir dados à Prefeitura sem justificar. O prazo de resposta é de 20 dias, prorrogável por mais 10. Se negarem ou não responderem, cabe recurso: acompanhe pelo protocolo.</p><div class="quote"><span class="lbl">Modelo de pedido</span><p>“Com base na Lei 12.527/2011, solicito à Secretaria Municipal de Habitação, para a região de <span class="hole">subprefeitura ou bairro</span>: (1) a lista de empreendimentos com unidades HIS e HMP, com a categoria de cada um; (2) o número de processos de fiscalização abertos e de sanções aplicadas por empreendimento desde 2024; (3) quantas Certidões de Ateste de renda foram emitidas nesses empreendimentos; (4) quantas denúncias de locação por temporada foram recebidas e qual o andamento delas.”</p><button class="btn btn-dark btn-sm" data-act="copyLAI">Copiar modelo</button></div><p style="margin-top:var(--s3)">Faça o pedido pelo Serviço de Informação ao Cidadão (SIC), acessível pelo portal do SP156, e peça a resposta em planilha. Se pedir hoje, a resposta vence em <b>'+fmtD(new Date(Date.now()+20*864e5))+'</b> (até '+fmtD(new Date(Date.now()+30*864e5))+' com prorrogação).</p>'],
+      ["organizar","Quem já está se organizando?","p. 20",'<p>Você não está sozinho. Moradores já se organizam para defender a qualidade de vida e acompanhar o que acontece com as obras e com a moradia.</p><div class="grid2"><div class="channel"><h3>Associação dos Moradores da Vila Mariana (AVM)</h3><p>Reúne moradores que acompanham obras, a preservação do bairro e as políticas públicas. Já questionou obras sobre nascentes e prédios que avançavam sobre a calçada.</p><a href="https://www.instagram.com/associacaovilamariana/" target="_blank" rel="noopener">@associacaovilamariana</a></div><div class="channel"><h3>Coletivo Chácara das Jaboticabeiras</h3><p>Grupo de moradores que se uniu para proteger um conjunto de ruas com casas, árvores e história. Organiza passeios pelo bairro que chamam a atenção de instituições como o Sesc.</p><a href="https://www.instagram.com/chacaradasjaboticabeiras/" target="_blank" rel="noopener">@chacaradasjaboticabeiras</a></div></div>']
+    ],tool:''}
+  ];
+  return '<div class="wrap">'+
+  '<section class="guide-hero"><div class="cover"><svg class="bg" width="300" height="300" viewBox="14 8 86 86" aria-hidden="true"><defs><clipPath id="cov-lens"><circle cx="64" cy="44" r="22"/></clipPath></defs><rect x="18" y="14" width="64" height="4" rx="1" fill="#F8E8DE"/><rect x="20" y="21" width="28" height="11" rx="1.5" fill="#C9583A"/><rect x="52" y="21" width="28" height="11" rx="1.5" fill="#C9583A"/><rect x="20" y="35" width="12" height="11" rx="1.5" fill="#C9583A"/><rect x="36" y="35" width="28" height="11" rx="1.5" fill="#C9583A"/><rect x="68" y="35" width="12" height="11" rx="1.5" fill="#C9583A"/><rect x="20" y="49" width="28" height="11" rx="1.5" fill="#C9583A"/><rect x="52" y="49" width="28" height="11" rx="1.5" fill="#C9583A"/><rect x="20" y="63" width="12" height="11" rx="1.5" fill="#C9583A"/><rect x="36" y="63" width="28" height="11" rx="1.5" fill="#C9583A"/><rect x="68" y="63" width="12" height="11" rx="1.5" fill="#C9583A"/><rect x="20" y="77" width="28" height="11" rx="1.5" fill="#C9583A"/><rect x="52" y="77" width="28" height="11" rx="1.5" fill="#C9583A"/><rect x="28" y="33" width="12" height="12" rx="1.5" fill="#231C18"/><rect x="60" y="33" width="12" height="12" rx="1.5" fill="#231C18"/><rect x="28" y="62" width="12" height="12" rx="1.5" fill="#231C18"/><rect x="60" y="62" width="12" height="12" rx="1.5" fill="#231C18"/><line x1="81" y1="61" x2="93" y2="75" stroke="#F8E8DE" stroke-width="10" stroke-linecap="round"/><circle cx="64" cy="44" r="22" fill="#3A2E28"/><g clip-path="url(#cov-lens)"><rect x="36" y="20" width="26" height="13" rx="2" fill="#C9583A"/><rect x="66" y="20" width="26" height="13" rx="2" fill="#C9583A"/><rect x="28" y="37" width="18" height="13" rx="2" fill="#C9583A"/><rect x="50" y="37" width="26" height="13" rx="2" fill="#E2A07E"/><rect x="80" y="37" width="18" height="13" rx="2" fill="#C9583A"/><rect x="36" y="54" width="26" height="13" rx="2" fill="#C9583A"/><rect x="66" y="54" width="26" height="13" rx="2" fill="#C9583A"/><rect x="68" y="16" width="20" height="20" rx="2.5" fill="#100C0A"/></g><circle cx="64" cy="44" r="22" fill="none" stroke="#F8E8DE" stroke-width="7"/></svg><div style="position:relative"><p style="color:var(--clay);font-weight:700;margin-bottom:var(--s3)">Moradia popular em São Paulo</p><h2>Guia do<br>Morador</h2></div><p style="position:relative">Moradia popular é para quem precisa. Como perceber quando a HIS do seu bairro está sendo usada de forma errada, e o que fazer a respeito.</p></div>'+
+  '<div><span class="kicker">Material de apoio em três partes</span><h1 style="font-size:clamp(2rem,4vw,3rem);font-weight:800;margin-bottom:var(--s3)">Leia aqui ou leve o PDF</h1><p style="font-size:1.125rem;color:var(--muted)">Sem juridiquês: o que é HIS, seus direitos, como denunciar, as regras de compra e venda e como o bairro pode se organizar. Você não precisa ser advogado nem provar tudo.</p>'+
+  '<div style="display:flex;flex-wrap:wrap;gap:var(--s2);margin:var(--s4) 0 var(--s5)"><a class="btn btn-primary" href="#" data-act="pdf" data-mode="dl">Baixar o PDF</a><a class="btn btn-ghost" href="#" data-act="pdf" data-mode="open">Abrir em nova aba</a></div>'+
+  '<nav class="parts" aria-label="Partes do guia">'+PARTS.map(function(p){return '<a class="part-link" href="#/guia/'+p.id+'"><span class="part-n">'+p.n+'</span><span><b>'+p.t+'</b><small>'+p.d+'</small></span><span class="part-p">'+p.p+'</span></a>'}).join("")+'</nav></div></section>'+
+  PARTS.map(function(p){return '<section class="part" id="'+p.id+'" aria-labelledby="'+p.id+'-t"><header class="part-head"><span class="part-big" aria-hidden="true">'+p.n+'</span><div><span class="kicker">Parte '+p.n+' · '+p.p+'</span><h2 class="section-title" id="'+p.id+'-t" style="margin:0 0 var(--s2)">'+p.t+'</h2><p class="section-lead" style="margin:0">'+p.d+'</p></div></header>'+
+    '<div class="acc">'+p.topics.map(function(t){return '<details id="'+t[0]+'"><summary>'+t[1]+'<small>'+t[2]+'</small></summary><div class="body">'+t[3]+'</div></details>'}).join("")+'</div>'+
+    (p.tool?'<div class="part-tool">'+p.tool+'</div>':'')+'</section>'}).join("")+
+  '<section class="part" id="glossario"><h2 class="section-title" style="margin-top:0">Palavras difíceis</h2><div class="field" style="max-width:420px"><label for="gq">Procurar no glossário</label><input class="input" id="gq" type="search" data-in="gq" value="'+esc(g.gq)+'" placeholder="Ex.: matrícula, ateste"></div>'+
+  '<dl class="gloss-list">'+(gl.length?gl.map(function(x){return '<div><dt>'+x[0]+'</dt><dd>'+x[1]+'</dd></div>'}).join(""):'<p>Nenhuma palavra encontrada. Tente outro termo.</p>')+'</dl></section>'+
+  '<p class="foot">Este guia é material informativo e não substitui orientação jurídica. Preços máximos, faixas de renda, números e canais de atendimento podem mudar: antes de agir, confirme nos sites oficiais, na SEHAB ou na Defensoria Pública. Fontes: Lei 16.050/2014 e Lei 17.975/2023; Decretos 63.130/2024, 64.244/2025 e 64.895/2026; SEHAB/Prefeitura de São Paulo; relatório da CPI da HIS (2025-2026); Constituição Federal e Leis 10.257/2001, 12.527/2011, 13.460/2017 e 10.741/2003; análise da AASP (2025).</p>'+
+  '</div>';
+}
+
+/* ================= JURÍDICO ================= */
+function vJuridico(){
+  var f=S.jur, list=JUR.filter(function(j){return f==="todos"||j.tipo===f});
+  return '<div class="wrap"><div class="page-head"><span class="kicker">Vila Mariana</span><h1>Registros jurídicos e base legal</h1><p>Registros curados à mão e ligados ao perímetro da Chácara das Jaboticabeiras. Os dois exemplos precisam ser conferidos nos atos oficiais.</p></div>'+
+  '<div class="seg" style="margin-bottom:var(--s5)" role="group" aria-label="Filtrar registros">'+[["todos","Todos"],["Judicial","Judicial"],["Patrimônio","Patrimônio"]].map(function(o){return '<button class="chip" aria-pressed="'+(f===o[0])+'" data-act="jurf" data-k="'+o[0]+'">'+o[1]+'</button>'}).join("")+'</div>'+
+  '<ol class="tl">'+list.map(function(j,i){return '<li><span class="when">'+esc(j.date)+'</span><div class="card"><h3>'+esc(j.reg)+'</h3><dl><dt>Instância</dt><dd>'+esc(j.inst)+'</dd><dt>Parte</dt><dd>'+esc(j.parte)+'</dd><dt>Status</dt><dd><span class="tag warn">'+esc(j.status)+'</span></dd><dt>Fonte</dt><dd>'+esc(j.fonte)+'</dd></dl><button class="btn btn-ghost btn-sm" data-act="cite" data-i="'+JUR.indexOf(j)+'">Copiar referência</button></div></li>'}).join("")+'</ol>'+
+  '<h2 class="section-title">A lei por trás da denúncia</h2><p class="section-lead">O que cada norma garante, em uma frase. Cite o número na denúncia: ajuda quem recebe a classificar o caso.</p>'+
+  '<div class="grid3">'+LAWS.map(function(l){return '<article class="law"><span class="tag" style="margin-bottom:var(--s2)">'+esc(l.n)+'</span><h3>'+esc(l.t)+'</h3><p>'+esc(l.d)+'</p></article>'}).join("")+'</div>'+
+  '<div class="panel" style="margin-top:var(--s5)"><h3 style="font-size:1.375rem;margin-bottom:var(--s3)">O que acontece com quem descumpre</h3><div class="grid3"><div><b class="big-num" style="font-size:2.5rem">1</b><p>Devolve o valor da outorga onerosa que foi perdoado.</p></div><div><b class="big-num" style="font-size:2.5rem">2×</b><p>Paga multa de duas vezes o valor do potencial construtivo usado indevidamente.</p></div><div><b class="big-num" style="font-size:2.5rem">0</b><p>Perde os incentivos. As sanções recaem sobre quem descumpre, não sobre quem denuncia.</p></div></div></div>'+
+  '<p class="foot">Este site não substitui orientação jurídica. Na dúvida, procure a Defensoria Pública.</p></div>';
+}
+
+/* ================= COBERTURA ================= */
+function vCobertura(){
+  var f=S.cob, loaded=LAYERS.filter(function(l){return l.ok}).length, checking=LAYERS.some(function(l){return l.checking});
+  var list=LAYERS.filter(function(l){return f==="todas"||(f==="ok"?l.ok:!l.ok)});
+  return '<div class="wrap"><div class="page-head"><span class="kicker">Transparência</span><h1>Cobertura de dados</h1><p>O que o mapa já tem e o que ainda falta carregar. Cada camada é um arquivo GeoJSON em WGS84, guardado na pasta <code>dados/</code> do site; quando o arquivo está lá, a camada aparece no mapa sozinha.</p></div>'+
+  '<div class="panel" style="margin-bottom:var(--s5);max-width:560px"><b style="font-family:var(--display);font-size:1.5rem">'+loaded+' de '+LAYERS.length+' camadas carregadas</b><div class="progress" role="progressbar" aria-valuemin="0" aria-valuemax="'+LAYERS.length+'" aria-valuenow="'+loaded+'"><i style="width:'+(loaded/LAYERS.length*100)+'%"></i></div><p style="color:var(--muted);font-size:.9375rem;margin:0">'+(checking?'Verificando os arquivos da pasta dados/…':'Uma das carregadas é de demonstração, com dados fictícios.')+'</p></div>'+
+  '<div class="seg" style="margin-bottom:var(--s4)" role="group" aria-label="Filtrar camadas">'+[["todas","Todas"],["ok","Carregadas"],["falta","Sem arquivo"]].map(function(o){return '<button class="chip" aria-pressed="'+(f===o[0])+'" data-act="cobf" data-k="'+o[0]+'">'+o[1]+'</button>'}).join("")+'</div>'+
+  '<div class="table-wrap"><table><thead><tr><th>Camada</th><th>Arquivo</th><th>Fonte provável</th><th>Status</th></tr></thead><tbody>'+list.map(function(l){return '<tr><td><b>'+esc(l.n)+'</b></td><td>'+(l.f?'<code>'+esc(DATA_DIR+l.f)+'</code>':'—')+'</td><td>'+esc(l.src)+'</td><td><span class="tag '+(l.ok?(l.builtin?"demo":"ok"):"")+'">'+esc(layerStatus(l))+'</span></td></tr>'}).join("")+'</tbody></table></div>'+
+  '<div style="margin-top:var(--s5);max-width:46rem">'+note("green","info","Tem um desses arquivos ou sabe onde encontrar? <a href=\"#/contato\">Fale com a equipe do projeto</a>. Dados do GeoSampa podem ser pedidos também pela Lei de Acesso à Informação.")+'</div></div>';
+}
+
+/* ================= METODOLOGIA ================= */
+function vMetodologia(){
+  return '<div class="wrap"><div class="page-head"><span class="kicker">Como foi feito</span><h1>Metodologia</h1><p>Fontes, tratamento dos dados e limites do piloto.</p></div>'+
+  '<div class="method">'+
+  '<article><h2>Mapa e camadas</h2><p>O mapa usa a biblioteca MapLibre GL JS sobre o mapa-base público do OpenStreetMap. Cada camada é um arquivo GeoJSON em WGS84 (EPSG:4326) na pasta <code>dados/</code>; shapefiles são convertidos com ogr2ogr. O site procura os arquivos ao abrir: se um não existe, a camada aparece como “sem arquivo”.</p></article>'+
+  '<article><h2>Perímetros e registros jurídicos</h2><p>Os perímetros têm ficha própria. Os registros jurídicos são curados à mão e ligados ao perímetro; cada um precisa ser conferido no ato oficial.</p></article>'+
+  '<article><h2>Dados de demonstração</h2><p>A camada “HIS possíveis” é inventada: posições, nomes, fases e números não correspondem a empreendimentos reais. Serve para mostrar o mapa, a legenda e a contagem por raio na ficha.</p></article>'+
+  '<article><h2>Limitações</h2><p>Os indicadores por perímetro dependem do cruzamento espacial das camadas, ainda não implementado. Por enquanto, só a Zona Sul (Vila Mariana) tem dados de demonstração; as outras zonas ainda não têm camada carregada.</p></article>'+
+  '<article><h2>Assistente de denúncia</h2><p>O texto é montado no navegador a partir das respostas, com base no Guia do Morador e nos Decretos 63.130/2024, 64.244/2025 e 64.895/2026. Nada é enviado nem guardado: fechar a aba apaga tudo.</p></article>'+
+  '<article><h2>“Fake HIS” não é categoria jurídica</h2><p>O termo, do LabCidade (FAUUSP), descreve unidades que usam incentivos de HIS sem chegar a quem precisa. É uma leitura analítica: para a lei, a unidade licenciada como HIS continua HIS, e a sanção depende de descumprir renda, teto, destinação de 10 anos ou a proibição da temporada.</p></article>'+
+  '</div><p class="foot">Projeto de extensão “Observatório Comunitário de Fiscalização Cidadã e Apoio aos Conselhos de ZEIS”.</p></div>';
+}
+
+
+/* ================= CONTATO ================= */
+var TOPICS=[
+  {k:"dados",t:"Corrigir um dado do mapa",d:"Uma HIS fora do lugar, um registro jurídico desatualizado."},
+  {k:"camada",t:"Enviar arquivo ou fonte de dados",d:"GeoJSON, shapefile ou onde encontrar uma camada que falta."},
+  {k:"guia",t:"Dúvida sobre o guia",d:"Algo que não ficou claro ou está desatualizado."},
+  {k:"parceria",t:"Associação, coletivo ou parceria",d:"Quer usar o site no seu bairro ou trabalhar junto."},
+  {k:"outro",t:"Outro assunto",d:"Sugestões, críticas, imprensa."}
+];
+function contactMailto(){
+  var c=S.contact,t=TOPICS.find(function(x){return x.k===c.topic});
+  var subj="HIS.SP — "+(t?t.t:"Contato");
+  return "mailto:"+CONTACT_EMAIL+"?subject="+encodeURIComponent(subj)+(c.msg.trim()?"&body="+encodeURIComponent(c.msg.trim()):"");
+}
+function mailLinks(){
+  var c=S.contact,t=TOPICS.find(function(x){return x.k===c.topic});
+  var su="HIS.SP — "+(t?t.t:"Contato"),body=c.msg.trim(),to=CONTACT_EMAIL;
+  return {
+    gmail:"https://mail.google.com/mail/?view=cm&fs=1&to="+encodeURIComponent(to)+"&su="+encodeURIComponent(su)+(body?"&body="+encodeURIComponent(body):""),
+    outlook:"https://outlook.live.com/mail/0/deeplink/compose?to="+encodeURIComponent(to)+"&subject="+encodeURIComponent(su)+(body?"&body="+encodeURIComponent(body):""),
+    app:contactMailto(), subject:su
+  };
+}
+function openMailPop(){
+  closeMailPop();
+  var L=mailLinks(),prev=document.activeElement;
+  var ov=document.createElement("div");ov.className="pop-ov";ov.id="mailpop";
+  ov.innerHTML='<div class="pop" role="dialog" aria-modal="true" aria-labelledby="pop-t"><button class="icon-btn pop-x" aria-label="Fechar" data-act="closePop">'+ICON.x+'</button>'+
+    '<h2 id="pop-t">Escrever para a equipe</h2><p class="pop-to">Para <b>'+esc(CONTACT_EMAIL)+'</b><br><span>Assunto: '+esc(L.subject)+'</span></p>'+
+    '<div class="pop-list">'+
+    '<a class="pop-opt" href="'+L.gmail+'" target="_blank" rel="noopener" data-act="popGo"><span class="pop-ic g">G</span><span><b>Abrir no Gmail</b><small>Abre uma nova mensagem no navegador</small></span></a>'+
+    '<a class="pop-opt" href="'+L.outlook+'" target="_blank" rel="noopener" data-act="popGo"><span class="pop-ic o">O</span><span><b>Abrir no Outlook</b><small>Hotmail, Outlook e Live</small></span></a>'+
+    '<a class="pop-opt" href="'+L.app+'" data-act="popGo"><span class="pop-ic a"><svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><rect x="2" y="4" width="16" height="12" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="m3 5 7 6 7-6" fill="none" stroke="currentColor" stroke-width="2"/></svg></span><span><b>Aplicativo de e-mail</b><small>O app padrão do celular ou do computador</small></span></a>'+
+    '<button class="pop-opt" data-act="copyEmail"><span class="pop-ic c"><svg width="18" height="18" viewBox="0 0 20 20" aria-hidden="true"><rect x="6" y="6" width="11" height="11" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M13 3H5a2 2 0 0 0-2 2v8" fill="none" stroke="currentColor" stroke-width="2"/></svg></span><span><b>Copiar endereço</b><small>Para colar onde preferir</small></span></button>'+
+    '</div>'+(S.contact.msg.trim()?'<p class="pop-note">Sua mensagem vai junto.</p>':'')+'</div>';
+  document.body.appendChild(ov);
+  ov._prev=prev;
+  ov.addEventListener("click",function(e){if(e.target===ov)closeMailPop()});
+  var first=ov.querySelector(".pop-opt");if(first)first.focus();
+}
+function closeMailPop(){var ov=document.getElementById("mailpop");if(!ov)return;var p=ov._prev;ov.remove();if(p&&p.focus&&document.body.contains(p))p.focus()}
+document.addEventListener("keydown",function(e){
+  var ov=document.getElementById("mailpop");if(!ov)return;
+  if(e.key==="Escape"){e.preventDefault();closeMailPop();return}
+  if(e.key==="Tab"){var f=ov.querySelectorAll("a,button");var a=f[0],z=f[f.length-1];if(e.shiftKey&&document.activeElement===a){e.preventDefault();z.focus()}else if(!e.shiftKey&&document.activeElement===z){e.preventDefault();a.focus()}}
+});
+function vContato(){
+  var c=S.contact;
+  return '<div class="wrap"><div class="page-head"><span class="kicker">Equipe do projeto</span><h1>Fale conosco</h1><p>Achou um erro no mapa, tem dados para compartilhar ou quer levar o HIS.SP para o seu bairro? Escreva para a equipe.</p></div>'+
+  '<div class="contact">'+
+  '<section class="panel">'+
+    '<div class="field"><span class="lbl" id="topic-l">Sobre o que é?</span><div class="choices contact-topics" role="radiogroup" aria-labelledby="topic-l">'+TOPICS.map(function(t){return '<label class="choice radio"><input type="radio" name="topic" value="'+t.k+'" '+(c.topic===t.k?"checked":"")+' data-in="ctopic"><span class="box"></span><span><b>'+t.t+'</b><small>'+t.d+'</small></span></label>'}).join("")+'</div></div>'+
+    '<div class="field"><label for="c-msg">Sua mensagem <span style="font-weight:400;color:var(--muted)">(opcional, dá para escrever direto no e-mail)</span></label><textarea class="input" id="c-msg" data-in="cmsg" placeholder="Conte o que precisa. Se for um dado do mapa, diga qual e onde.">'+esc(c.msg)+'</textarea></div>'+
+    '<div class="slip-actions" style="margin-top:0"><button class="btn btn-primary" id="c-send" data-act="mailPop" aria-haspopup="dialog">Escrever e-mail</button><button class="btn btn-ghost" data-act="copyEmail">Copiar endereço</button></div>'+
+    '<p class="privacy">'+ICON.lock+'<span>Você escolhe onde escrever (Gmail, Outlook ou o aplicativo de e-mail) e a mensagem já abre com o assunto preenchido. O site não envia nem guarda nada.</span></p>'+
+  '</section>'+
+  '<aside class="contact-side">'+
+    '<div class="mailcard"><span class="lbl">E-mail da equipe</span><button class="mail-addr" data-act="mailPop" aria-haspopup="dialog">'+esc(CONTACT_EMAIL)+'</button><span class="mail-hint">Toque para escrever</span></div>'+
+    note("brick","alert","<b>Este e-mail não é canal de denúncia.</b> A equipe não investiga nem encaminha casos. Para denunciar uma HIS irregular, registre no 156: o assistente monta o texto para você.")+
+    '<a class="btn btn-ghost" style="margin-top:var(--s3);width:100%" href="#/denunciar">Ir para Denunciar</a>'+
+    '<div style="margin-top:var(--s4)">'+note("","lock","Não mande nome, foto ou documento de moradores e hóspedes. Se for sobre um prédio, o endereço basta.")+'</div>'+
+  '</aside></div></div>';
+}
+
+/* ================= EVENTS ================= */
+document.addEventListener("click",function(e){
+  var t=e.target.closest("[data-act]");if(!t)return;
+  var a=t.dataset.act,m=S.map,r=S.rep;
+  switch(a){
+    case "menu":var n=$("#nav");n.classList.toggle("open");t.setAttribute("aria-expanded",n.classList.contains("open"));return;
+    case "toggleHis":m.showHis=!m.showHis;break;
+    case "toggleLayer":var ly=LAYERS.find(function(x){return x.id===t.dataset.id});if(ly)ly.on=t.checked;break;
+    case "toggleRing":if(t.tagName==="INPUT"){m.ring=t.checked}else m.ring=!m.ring;break;
+    case "phase":m.ph[t.dataset.k]=!m.ph[t.dataset.k];break;
+    case "terr":m.terr=t.dataset.k;break;
+    case "pick":m.sel=t.dataset.id||null;break;
+    case "tab":m.tab=t.dataset.k;break;
+    case "filters":m.filtersOpen=!m.filtersOpen;break;
+    case "next":if(!canNext())return;if(r.step===4)captureSlip();r.step=Math.min(5,r.step+1);r.max=Math.max(r.max,r.step);render();window.scrollTo(0,0);return;
+    case "prev":if(r.step===4)captureSlip();r.step=Math.max(1,r.step-1);render();window.scrollTo(0,0);return;
+    case "goStep":var nn=+t.dataset.n;if(nn>r.max)return;if(r.step===4)captureSlip();r.step=nn;render();return;
+    case "pickHis":var h=HIS.find(function(x){return x.id===t.dataset.id});if(r.hisId===h.id){r.hisId="";}else{r.hisId=h.id;r.predio=h.nome;r.end=h.end}break;
+    case "placa":r.placa=t.dataset.k;break;
+    case "addDiary":var w=$("#d-when").value,x=$("#d-what").value.trim();if(!x){$("#d-what").focus();toast("Escreva o que aconteceu");return}r.diary.push({when:w,what:x});r.diary.sort(function(p,q){return (p.when||"").localeCompare(q.when||"")});render();$("#d-what").focus();return;
+    case "delDiary":r.diary.splice(+t.dataset.i,1);break;
+    case "channel":captureSlip();r.channel=t.dataset.k;r.edited=false;break;
+    case "sigilo":r.sigilo=t.checked;r.edited=false;break;
+    case "regen":r.edited=false;break;
+    case "copy":captureSlip();copy($("#slip-ta").value,"Texto copiado");return;
+    case "download":captureSlip();download($("#slip-ta").value);return;
+    case "done":r.done[+t.dataset.i]=t.checked;break;
+    case "copyLAI":copy(LAI_TXT,"Modelo copiado");return;
+    case "copyEmail":copy(CONTACT_EMAIL,"Endereço copiado");closeMailPop();return;
+    case "mailPop":e.preventDefault();openMailPop();return;
+    case "closePop":closeMailPop();return;
+    case "popGo":setTimeout(closeMailPop,50);return;
+    case "newReport":S.rep=freshReport();break;
+    case "capcat":capState(t.dataset.scope).cat=t.dataset.k;break;
+    case "capmode":var cs=capState(t.dataset.scope);cs.mode=t.dataset.k;break;
+    case "quiz":S.guide.quiz[+t.dataset.i]=t.dataset.v==="s";break;
+    case "jurf":S.jur=t.dataset.k;break;
+    case "cobf":S.cob=t.dataset.k;break;
+    case "cite":var j=JUR[+t.dataset.i];copy(j.date+" — "+j.inst+". "+j.reg+". Fonte: "+j.fonte+".","Referência copiada");return;
+    case "pdf":e.preventDefault();openPdf(t.dataset.mode);return;
+    case "startObra":S.rep=freshReport();S.rep.kind="obra";S.rep.max=1;return;
+    case "size":return;
+    default:return;
+  }
+  if(t.tagName!=="INPUT")e.preventDefault();
+  rerenderKeepFocus();
+  if(a==="pick"&&window.innerWidth<=900){var fi=$(".ficha");if(fi)fi.scrollIntoView({behavior:"smooth",block:"start"})}
+  if(a==="pick"&&/^h\d/.test(t.dataset.id||""))setTimeout(ctaPulse,250);
+});
+document.querySelectorAll("[data-size]").forEach(function(b){b.addEventListener("click",function(){document.documentElement.dataset.size=b.dataset.size;document.querySelectorAll("[data-size]").forEach(function(x){x.setAttribute("aria-pressed",x===b)})})});
+function capState(s){return s==="rep"?S.rep.cap:S.guide.calc}
+function captureSlip(){var ta=$("#slip-ta");if(ta){S.rep.text=ta.value}}
+document.addEventListener("input",function(e){
+  var t=e.target,k=t.dataset.in;if(!k)return;var r=S.rep;
+  switch(k){
+    case "mapq":S.map.q=t.value;rerenderKeepFocus();return;
+    case "kind":r.kind=t.value;r.signs=r.signs.filter(function(s){return (SIGNS[r.kind]||[]).indexOf(s)>-1});rerenderKeepFocus();return;
+    case "predio":case "end":case "torre":case "unid":case "link":case "codigo":case "desc":r[k]=t.value;if(k==="predio"||k==="end")r.hisId="";refreshPreview();return;
+    case "sign":if(t.checked){if(r.signs.indexOf(t.value)<0)r.signs.push(t.value)}else r.signs=r.signs.filter(function(s){return s!==t.value});refreshPreview();return;
+    case "slip":r.text=t.value;if(!r.edited){r.edited=true;var head=$(".slip-head");if(head){var tg=head.querySelector(".tag");if(tg)tg.outerHTML='<button class="btn btn-ghost btn-sm" data-act="regen">Refazer com as respostas</button>'}}return;
+    case "proto":r.proto=t.value;return;
+    case "protoDate":r.protoDate=t.value;rerenderKeepFocus();return;
+    case "capval":var c=capState(t.dataset.scope);c.val=t.value;var out=$("#capout-"+t.dataset.scope);if(out)out.innerHTML=capVerdict(capCheck(c));if(t.dataset.scope==="rep")refreshPreview();return;
+    case "gq":S.guide.gq=t.value;rerenderKeepFocus();return;
+    case "ctopic":S.contact.topic=t.value;return;
+    case "cmsg":S.contact.msg=t.value;return;
+  }
+});
+document.addEventListener("keydown",function(e){if(e.key==="Enter"&&e.target.id==="d-what"){e.preventDefault();$('[data-act="addDiary"]').click()}});
+function copy(txt,msg){
+  function fb(){var ta=document.createElement("textarea");ta.value=txt;ta.style.position="fixed";ta.style.opacity="0";document.body.appendChild(ta);ta.select();try{document.execCommand("copy");toast(msg)}catch(err){toast("Selecione o texto e copie")}ta.remove()}
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(txt).then(function(){toast(msg)},fb)}else fb();
+}
+function download(txt){var b=new Blob([txt],{type:"text/plain;charset=utf-8"});var u=URL.createObjectURL(b);var a=document.createElement("a");a.href=u;a.download="denuncia-his.txt";document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(u)},1000);toast("Arquivo baixado")}
+var PDF_B64="",pdfUrl="Guia_do_Morador.pdf";
+function openPdf(mode){
+  try{if(!pdfUrl){var bin=atob(PDF_B64),u8=new Uint8Array(bin.length);for(var i=0;i<bin.length;i++)u8[i]=bin.charCodeAt(i);pdfUrl=URL.createObjectURL(new Blob([u8],{type:"application/pdf"}))}
+    if(mode==="open"){var w=window.open(pdfUrl,"_blank");if(!w)toast("Permita pop-ups para abrir o PDF")}
+    else{var a=document.createElement("a");a.href=pdfUrl;a.download="Guia_do_Morador.pdf";document.body.appendChild(a);a.click();a.remove();toast("PDF baixado")}
+  }catch(err){toast("Não foi possível abrir o PDF")}
+}
+var rt;window.addEventListener("resize",function(){clearTimeout(rt);rt=setTimeout(function(){if(S.route==="mapa")rerenderKeepFocus()},150)});
+function ctaPulse(){var c=document.getElementById("cta");if(!c||S.route==="denunciar")return;c.classList.remove("pulse");void c.offsetWidth;c.classList.add("pulse");clearTimeout(ctaPulse._t);ctaPulse._t=setTimeout(function(){c.classList.remove("pulse")},3400)}
+function logoScan(){var b=document.querySelector(".brand");if(!b)return;b.classList.remove("scan");void b.offsetWidth;b.classList.add("scan")}
+setTimeout(logoScan,300);
+loadLayers();
+document.querySelector(".brand").addEventListener("mouseenter",function(){var b=this;if(b._t)return;logoScan();b._t=setTimeout(function(){b._t=null},1500)});
+document.querySelector(".brand").addEventListener("focus",logoScan);
+setTimeout(ctaPulse,1800);
+window.addEventListener("hashchange",go);
+go();
+})();
+</script>
+</body>
+</html>
